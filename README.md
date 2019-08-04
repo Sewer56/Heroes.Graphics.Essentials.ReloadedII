@@ -3,8 +3,8 @@
 	<img src="https://i.imgur.com/BjPn7rU.png" width="150" align="center" />
 	<br/> <br/>
 	<strong>Hey Dream</strong>
-    <p>I need you to help me<br/>
-    put a cringy line here.</p>
+    <p">I need you to help me<br/>
+    put a cringy line here."</p>
 </div>
 
 # Table of Contents
@@ -23,7 +23,7 @@ The following project is a [Reloaded II](https://github.com/Reloaded-Project/Rel
 
 #### Widescreen & Tallscreen Support
 
-Normally Sonic Heroes is constrained to using three hardcoded resolutions, all constrained to the 4:3 aspect ratio. Graphics Essentials meanwhile allows you to use both play the game in wide and tall screen modes.
+Normally Sonic Heroes only allows you to use a few hardcoded resolutions, all constrained to the 4:3 aspect ratio. Graphics Essentials meanwhile allows you to use both play the game in wide and tall screen modes.
 
 ![Wide 2P](./Docs/Images/Wide2P.png)
 
