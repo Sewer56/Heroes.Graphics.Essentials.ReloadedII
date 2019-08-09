@@ -67,7 +67,8 @@ namespace Heroes.Graphics.Essentials.RenderWare.Camera
             if (actualAspect > aspectLimit)
                 viewWindow.X = viewWindow.X * relativeAspectRatio; // Hor+
             else
-                viewWindow.Y = viewWindow.Y / relativeAspectRatio; // Vert+
+                viewWindow.X = viewWindow.X * relativeAspectRatio / (actualAspect / aspectLimit); // Preserve Horizontal for vertical expansion
+                viewWindow.Y = viewWindow.Y / (actualAspect / aspectLimit); // Vert+
         }
 
         /// <summary>
@@ -82,7 +83,8 @@ namespace Heroes.Graphics.Essentials.RenderWare.Camera
             if (actualAspect > aspectLimit)
                 recipViewWindow.X = recipViewWindow.X * relativeAspectRatio; // Hor+
             else
-                recipViewWindow.Y = recipViewWindow.Y / relativeAspectRatio; // Vert+
+                recipViewWindow.X = recipViewWindow.X * relativeAspectRatio / (actualAspect / aspectLimit); // Preserve Horizontal for vertical expansion
+                recipViewWindow.Y = recipViewWindow.Y / (actualAspect / aspectLimit); // Vert+
         }
 
         /// <summary>
