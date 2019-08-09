@@ -1,19 +1,21 @@
 # Project Output Paths
-$essentialsOutputPath = "Heroes.Graphics.Essentials/bin"
+$modOutputPath = "Heroes.Graphics.Essentials/bin"
+$solutionName = "Heroes.Graphics.Essentials.sln"
+$publishName = "HeroesGraphicsEssentials.zip"
 $publishDirectory = "Publish"
 
 if ([System.IO.Directory]::Exists($publishDirectory)) {
 	Get-ChildItem $publishDirectory -Include * -Recurse | Remove-Item -Force -Recurse
 }
 
-
 # Build
-dotnet clean Heroes.Graphics.Essentials.sln
-dotnet build -c Release Heroes.Graphics.Essentials.sln
+dotnet restore $solutionName
+dotnet clean $solutionName
+dotnet build -c Release $solutionName
 
 # Cleanup
-Get-ChildItem $essentialsOutputPath -Include *.pdb -Recurse | Remove-Item -Force -Recurse
-Get-ChildItem $essentialsOutputPath -Include *.xml -Recurse | Remove-Item -Force -Recurse
+Get-ChildItem $modOutputPath -Include *.pdb -Recurse | Remove-Item -Force -Recurse
+Get-ChildItem $modOutputPath -Include *.xml -Recurse | Remove-Item -Force -Recurse
 
 # Make compressed directory
 if (![System.IO.Directory]::Exists($publishDirectory)) {
@@ -22,4 +24,4 @@ if (![System.IO.Directory]::Exists($publishDirectory)) {
 
 # Compress
 Add-Type -A System.IO.Compression.FileSystem
-[IO.Compression.ZipFile]::CreateFromDirectory( $essentialsOutputPath + '/Release', 'Publish/HeroesGraphicsEssentials.zip')
+[IO.Compression.ZipFile]::CreateFromDirectory( $modOutputPath + '/Release', 'Publish/' + $publishName)
