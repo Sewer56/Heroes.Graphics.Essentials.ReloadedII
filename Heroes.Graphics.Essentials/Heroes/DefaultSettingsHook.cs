@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using Heroes.Graphics.Essentials.Config.Structures;
 using Reloaded.Hooks;
-using Reloaded.Hooks.X86;
-using static Reloaded.Hooks.X86.FunctionAttribute;
+using Reloaded.Hooks.Definitions;
+using Reloaded.Hooks.Definitions.X86;
+using static Reloaded.Hooks.Definitions.X86.FunctionAttribute;
 
 namespace Heroes.Graphics.Essentials.Heroes
 {
@@ -17,7 +18,7 @@ namespace Heroes.Graphics.Essentials.Heroes
         public DefaultSettingsHook(DefaultSettings defaultSettings)
         {
             DefaultSettings = defaultSettings;
-            ReadConfigFromIniHook = new Hook<ReadConfigfromINI>(ReadConfigFromIni, 0x00629CE0).Activate();
+            ReadConfigFromIniHook = Program.ReloadedHooks.CreateHook<ReadConfigfromINI>(ReadConfigFromIni, 0x00629CE0).Activate();
         }
 
         private int ReadConfigFromIni(char* configPath)

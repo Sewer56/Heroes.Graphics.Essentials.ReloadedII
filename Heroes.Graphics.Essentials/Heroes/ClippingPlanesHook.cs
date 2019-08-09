@@ -5,7 +5,8 @@ using System.Text;
 using Heroes.Graphics.Essentials.RenderWare.Camera;
 using Heroes.Graphics.Essentials.Utility;
 using Reloaded.Hooks;
-using Reloaded.Hooks.X86;
+using Reloaded.Hooks.Definitions;
+using Reloaded.Hooks.Definitions.X86;
 using Vanara.PInvoke;
 
 namespace Heroes.Graphics.Essentials.Heroes
@@ -22,7 +23,7 @@ namespace Heroes.Graphics.Essentials.Heroes
         public ClippingPlanesHook(Config.Config config)
         {
             Config = config;
-            BuildClipPlanesHook = new Hook<CameraBuildPerspClipPlanes>(BuildClipPlanesImpl, 0x0064AF80).Activate();
+            BuildClipPlanesHook = Program.ReloadedHooks.CreateHook<CameraBuildPerspClipPlanes>(BuildClipPlanesImpl, 0x0064AF80).Activate();
         }
 
         private int BuildClipPlanesImpl(RwCamera* rwCamera)

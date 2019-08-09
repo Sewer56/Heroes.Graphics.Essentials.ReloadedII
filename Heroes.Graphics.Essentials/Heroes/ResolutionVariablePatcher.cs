@@ -9,11 +9,11 @@ using Heroes.Graphics.Essentials.Heroes.Structures;
 using Heroes.Graphics.Essentials.Utility;
 using Heroes.Graphics.Essentials.Utility.Structs;
 using Reloaded.Hooks;
-using Reloaded.Hooks.Internal;
-using Reloaded.Hooks.X86;
+using Reloaded.Hooks.Definitions;
+using Reloaded.Hooks.Definitions.X86;
 using Reloaded.Memory.Sources;
 using Vanara.PInvoke;
-using static Reloaded.Hooks.X86.FunctionAttribute;
+using static Reloaded.Hooks.Definitions.X86.FunctionAttribute;
 
 namespace Heroes.Graphics.Essentials.Heroes
 {
@@ -71,20 +71,20 @@ namespace Heroes.Graphics.Essentials.Heroes
             _config = new Config.Config();
             OnLocationChangeEventHandler = OnLocationChange;
             User32.SetWinEventHook(EventObjectLocationchange, EventObjectLocationchange, HINSTANCE.NULL, OnLocationChangeEventHandler, (uint) Process.GetCurrentProcess().Id, 0, User32.WINEVENT.WINEVENT_OUTOFCONTEXT);
-            _draw2PViewPortHook = new Hook<sub_422AF0>(Draw2PViewportHook, 0x422AF0).Activate();
-            _drawSpecialStageGaugeHook = new Hook<sub_5263C0>(DrawSpecialStageGaugeImpl, 0x5263C0).Activate();
-            _drawSpecialStageBarHook = new Hook<sub_526280>(DrawSpecialStageBarImpl, 0x526280, 0xD).Activate();
-            _drawSpecialStageEmeraldIndicatorHook = new Hook<sub_458920>(DrawSpecialStageEmeraldImpl, 0x458920).Activate();
-            _draw2PStatusHook = new Hook<sub_422A70>(Draw2pStatusImpl, 0x422A70).Activate();
-            _renderPrimitiveHook = new Hook<_rwD3D8Im2DRenderPrimitive>(RenderPrimitiveImpl, 0x00662B00).Activate();
-            _renderVideoHook = new Hook<sub_644450>(RenderVideoHookImpl, 0x644450).Activate();
-            _drawFullVideoFrameHook = new Hook<DrawFullVideoFrame>(DrawFullVideoFrameHookImpl, 0x0042A100).Activate();
-            _drawSmallVideoFrameHook = new Hook<DrawSmallFrame>(DrawSmallFrameImpl, 0x00429F80).Activate();
-            _drawTitlecardElementsHook = new Hook<sub_442850>(DrawTitlecardElementsImpl, 0x442850).Activate();
-            _drawSpecialStageLinkHook = new Hook<sub_526F60>(DrawSpecialStageLinkImpl, 0x526F60).Activate();
-            _getVertexBufferSubmission = Wrapper.Create<sub_651E20>(0x651E20);
-            _drawNowLoadingHook = new Hook<sub_44EAC0>(DrawNowLoadingImpl, 0x44EAC0).Activate();
-            _executeCreditsHook = new Hook<sub_4545F0>(ExecuteCredits, 0x4545F0).Activate();
+            _draw2PViewPortHook = Program.ReloadedHooks.CreateHook<sub_422AF0>(Draw2PViewportHook, 0x422AF0).Activate();
+            _drawSpecialStageGaugeHook = Program.ReloadedHooks.CreateHook<sub_5263C0>(DrawSpecialStageGaugeImpl, 0x5263C0).Activate();
+            _drawSpecialStageBarHook = Program.ReloadedHooks.CreateHook<sub_526280>(DrawSpecialStageBarImpl, 0x526280, 0xD).Activate();
+            _drawSpecialStageEmeraldIndicatorHook = Program.ReloadedHooks.CreateHook<sub_458920>(DrawSpecialStageEmeraldImpl, 0x458920).Activate();
+            _draw2PStatusHook = Program.ReloadedHooks.CreateHook<sub_422A70>(Draw2pStatusImpl, 0x422A70).Activate();
+            _renderPrimitiveHook = Program.ReloadedHooks.CreateHook<_rwD3D8Im2DRenderPrimitive>(RenderPrimitiveImpl, 0x00662B00).Activate();
+            _renderVideoHook = Program.ReloadedHooks.CreateHook<sub_644450>(RenderVideoHookImpl, 0x644450).Activate();
+            _drawFullVideoFrameHook = Program.ReloadedHooks.CreateHook<DrawFullVideoFrame>(DrawFullVideoFrameHookImpl, 0x0042A100).Activate();
+            _drawSmallVideoFrameHook = Program.ReloadedHooks.CreateHook<DrawSmallFrame>(DrawSmallFrameImpl, 0x00429F80).Activate();
+            _drawTitlecardElementsHook = Program.ReloadedHooks.CreateHook<sub_442850>(DrawTitlecardElementsImpl, 0x442850).Activate();
+            _drawSpecialStageLinkHook = Program.ReloadedHooks.CreateHook<sub_526F60>(DrawSpecialStageLinkImpl, 0x526F60).Activate();
+            _getVertexBufferSubmission = Program.ReloadedHooks.CreateWrapper<sub_651E20>(0x651E20, out _);
+            _drawNowLoadingHook = Program.ReloadedHooks.CreateHook<sub_44EAC0>(DrawNowLoadingImpl, 0x44EAC0).Activate();
+            _executeCreditsHook = Program.ReloadedHooks.CreateHook<sub_4545F0>(ExecuteCredits, 0x4545F0).Activate();
         }
 
         /* Patching resolutions in functions section */
