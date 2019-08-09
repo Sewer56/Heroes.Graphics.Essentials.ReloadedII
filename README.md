@@ -16,6 +16,10 @@
       - [Other Features](#other-features)
   - [How to Use](#how-to-use)
 
+# Prerequisites
+The CRI FS Hook uses the [Hooks Shared Library](https://github.com/Sewer56/Reloaded.SharedLib.Hooks).
+Please download and extract that mod first.
+
 # About This Project
 
 The following project is a [Reloaded II](https://github.com/Reloaded-Project/Reloaded-II) Mod Loader mod that provides a set of essential features for running Sonic Heroes in 2019, mainly in the graphics department.
