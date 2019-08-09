@@ -5,6 +5,7 @@
 	<strong>Hey Dream</strong>
     <p">I need you to help me<br/>
     put a cringy line here."</p>
+<b>Id: sonicheroes.essentials.graphics</b>
 </div>
 
 # Table of Contents
