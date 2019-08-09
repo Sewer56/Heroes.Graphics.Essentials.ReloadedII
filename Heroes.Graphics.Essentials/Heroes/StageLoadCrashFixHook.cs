@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Heroes.Graphics.Essentials.Utility;
-using Reloaded.Hooks;
-using Reloaded.Hooks.X86;
+using Reloaded.Hooks.Definitions;
+using Reloaded.Hooks.Definitions.X86;
 using Vanara.PInvoke;
-using static Reloaded.Hooks.X86.FunctionAttribute;
+using static Reloaded.Hooks.Definitions.X86.FunctionAttribute;
 
 namespace Heroes.Graphics.Essentials.Heroes
 {
@@ -14,7 +14,7 @@ namespace Heroes.Graphics.Essentials.Heroes
 
         public StageLoadCrashFixHook()
         {
-            _cameraInitHook = new Hook<TObjCamera_Init>(TObjCameraInit, 0x0061D3B0).Activate();
+            _cameraInitHook = Program.ReloadedHooks.CreateHook<TObjCamera_Init>(TObjCameraInit, 0x0061D3B0).Activate();
         }
 
         private int TObjCameraInit(IntPtr thisPointer, int camLimit)

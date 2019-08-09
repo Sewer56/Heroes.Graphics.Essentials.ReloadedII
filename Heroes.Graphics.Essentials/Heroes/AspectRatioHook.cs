@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 using Heroes.Graphics.Essentials.RenderWare.Camera;
 using Heroes.Graphics.Essentials.Utility;
-using Reloaded.Hooks;
-using Reloaded.Hooks.X86;
+using Reloaded.Hooks.Definitions;
+using Reloaded.Hooks.Definitions.X86;
 using Vanara.PInvoke;
 
 namespace Heroes.Graphics.Essentials.Heroes
@@ -19,7 +15,7 @@ namespace Heroes.Graphics.Essentials.Heroes
         public AspectRatioHook(Config.Config config)
         {
             Config = config;
-            SetViewWindowHook = new Hook<RwCameraSetViewWindow>(SetViewWindowImpl, 0x0064AC80).Activate();
+            SetViewWindowHook = Program.ReloadedHooks.CreateHook<RwCameraSetViewWindow>(SetViewWindowImpl, 0x0064AC80).Activate();
         }
 
         private void SetViewWindowImpl(RwCamera* rwCamera, RwView* view)

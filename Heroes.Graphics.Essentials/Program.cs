@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Reloaded.Hooks;
-using Reloaded.Hooks.X86;
+using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
 using Reloaded.Mod.Interfaces.Internal;
 
@@ -13,6 +11,8 @@ namespace Heroes.Graphics.Essentials
         private const string MyModId = "sonicheroes.essentials.graphics";
 
         public static IModLoader ModLoader;
+        public static IReloadedHooks ReloadedHooks; // Not using Weak Reference here is OK because ReloadedHooks is not unloadable.
+
         private GraphicsEssentials _graphicsEssentials;
 
         public void Start(IModLoaderV1 loader)
@@ -21,6 +21,7 @@ namespace Heroes.Graphics.Essentials
             Debugger.Launch();
             #endif
             ModLoader = (IModLoader)loader;
+            ModLoader.GetController<IReloadedHooks>().TryGetTarget(out ReloadedHooks);
 
             /* Your mod code starts here. */
             _graphicsEssentials = new GraphicsEssentials(ModLoader.GetDirectoryForModId(MyModId));
