@@ -1,4 +1,4 @@
-﻿using Heroes.Graphics.Essentials.Config.Structures;
+﻿using Heroes.Graphics.Essentials.Shared.Heroes;
 
 namespace Heroes.Graphics.Essentials.Config
 {

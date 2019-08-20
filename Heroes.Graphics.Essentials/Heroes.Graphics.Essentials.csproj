@@ -4,13 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -29,21 +22,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reloaded.Memory" Version="1.4.1" />
     <PackageReference Include="Reloaded.Mod.Interfaces" Version="1.3.0" />
-    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.0.0" />
     <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
-    <PackageReference Include="Vanara.PInvoke.Shared" Version="2.3.11" />
-    <PackageReference Include="Vanara.PInvoke.User32" Version="2.3.11" />
-    <PackageReference Include="Vanara.PInvoke.User32.Gdi" Version="2.3.11" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Heroes.Graphics.Essentials.Shared\Heroes.Graphics.Essentials.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <NativeLibs Remove="GraphicsEssentials.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Heroes.Graphics.Essentials.Shared\Heroes.Graphics.Essentials.Definitions.csproj" />
+    <ProjectReference Include="..\Heroes.Graphics.Essentials.Unoptimized\Heroes.Graphics.Essentials.Hooks.csproj" />
   </ItemGroup>
 
 </Project>

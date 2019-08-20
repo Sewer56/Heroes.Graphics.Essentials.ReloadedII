@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Reloaded.Memory" Version="2.0.1" />
+    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.0.0" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0-preview7.19362.9" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="2.3.11" />
+    <PackageReference Include="Vanara.PInvoke.User32.Gdi" Version="2.3.11" />
+  </ItemGroup>
+
+</Project>

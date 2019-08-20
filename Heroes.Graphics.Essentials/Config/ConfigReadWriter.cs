@@ -1,4 +1,4 @@
-﻿using Heroes.Graphics.Essentials.Shared;
+﻿using Heroes.Graphics.Essentials.Shared.Serialization;
 
 namespace Heroes.Graphics.Essentials.Config
 {
