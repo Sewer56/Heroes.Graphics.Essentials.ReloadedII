@@ -68,7 +68,7 @@ namespace Heroes.Graphics.Essentials.Heroes
 
         public ResolutionVariablePatcher(Config.Config config)
         {
-            _config = new Config.Config();
+            _config = config;
             OnLocationChangeEventHandler = OnLocationChange;
             User32.SetWinEventHook(EventObjectLocationchange, EventObjectLocationchange, HINSTANCE.NULL, OnLocationChangeEventHandler, (uint) Process.GetCurrentProcess().Id, 0, User32.WINEVENT.WINEVENT_OUTOFCONTEXT);
             _draw2PViewPortHook = Program.ReloadedHooks.CreateHook<sub_422AF0>(Draw2PViewportHook, 0x422AF0).Activate();
