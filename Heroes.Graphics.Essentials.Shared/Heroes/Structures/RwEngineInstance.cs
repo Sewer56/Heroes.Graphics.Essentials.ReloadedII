@@ -9,14 +9,17 @@ namespace Heroes.Graphics.Essentials.Shared.Heroes.Structures
 
         public struct RwEngine
         {
-            public MultiplayerRenderRelated* MultiplayerRender;
+            public ScreenRenderRelated* ScreenRender;
         }
 
         [StructLayout(LayoutKind.Explicit)]
-        public struct MultiplayerRenderRelated
+        public struct ScreenRenderRelated
         {
             [FieldOffset(0x60)]
-            public MultiplayerCameraController* MultiplayerCameraController;
+            public Viewport* ScreenViewport;
+
+            [FieldOffset(0x64)]
+            public AllViewPorts* AllViewPorts;
 
             [FieldOffset(0x70)]
             public float MenuYScale;
@@ -26,57 +29,71 @@ namespace Heroes.Graphics.Essentials.Shared.Heroes.Structures
         }
 
         [StructLayout(LayoutKind.Explicit)]
-        public struct MultiplayerCameraController
+        public struct AllViewPorts
         {
-            [FieldOffset(0xC)]
-            public int ScreenWidth;
+            /* This is technically a possibly endless array of viewports. The offsets are for convenience only. */
 
-            [FieldOffset(0x10)]
-            public int ScreenHeight;
+            /* Hidden Viewport? */
+            [FieldOffset(0x0)]
+            public Viewport UnknownViewPort; // ?
 
-            [FieldOffset(0x28)]
-            public int UnknownDefaultScreenWidth; // Defaults 640
+            [FieldOffset(0x5C)]
+            public Viewport P1Viewport;  // Used by player one
 
-            [FieldOffset(0x2C)]
-            public int UnknownDefaultScreenHeight; // Defaults 480
+            [FieldOffset(0xB8)]
+            public Viewport P1UnknownViewport;  // Unused
 
-            [FieldOffset(0x68)]
-            public int UnknownScreenWidth;  // Same as width of screen, unknown effect.
+            [FieldOffset(0x114)]
+            public Viewport P2Viewport; // Used by player two
 
-            [FieldOffset(0x6C)]
-            public int UnknownScreenHeight; // Same as width of screen, unknown effect.
+            [FieldOffset(0x170)]
+            public Viewport P2UnknownViewport; // Unused
 
-            [FieldOffset(0xC4)]
-            public PlayerViewport PlayerOneViewport; // Used by player one
+            [FieldOffset(0x1CC)]
+            public Viewport P3Viewport; // Used by player three
 
-            [FieldOffset(0x120)]
-            public PlayerViewport PlayerTwoViewport; // Unused
+            [FieldOffset(0x228)]
+            public Viewport P3UnknownViewport; // Unused
 
-            [FieldOffset(0x17C)]
-            public PlayerViewport PlayerThreeViewport; // Used by player two
+            [FieldOffset(0x284)]
+            public Viewport P4Viewport; // Used by player four
 
-            [FieldOffset(0x1D8)]
-            public PlayerViewport PlayerFourViewport; // Unused
+            [FieldOffset(0x2E0)]
+            public Viewport P4UnknownViewport; // Unused
+
         }
-
 
         [StructLayout(LayoutKind.Explicit, Size = 0x5C)]
-        public struct PlayerViewport
+        public struct Viewport
         {
             [FieldOffset(0x0)]
-            public int PlayerOneViewPortWidth; // Used by player one
+            public Viewport* Parent;
 
             [FieldOffset(0x4)]
-            public int PlayerOneViewPortHeight; // Used by player one
+            public int unk_4;
 
             [FieldOffset(0x8)]
-            public int Unknown; // Default: 32
+            public int unk_8;
 
             [FieldOffset(0xC)]
-            public int Unknown2; // Default: 32
+            public int Width; // Used by player one
 
             [FieldOffset(0x10)]
-            public int OffsetX;  // X offset of viewport relative to screen.
+            public int Height; // Used by player one
+
+            [FieldOffset(0x14)]
+            public int Unknown; // Default: 32
+
+            [FieldOffset(0x18)]
+            public int Unknown2; // Default: 32
+
+            [FieldOffset(0x1C)]
+            public short OffsetX;  // X offset of viewport relative to screen.
+
+            [FieldOffset(0x1E)]
+            public short OffsetY;  // Y offset of viewport relative to screen.
         }
     }
+
+    
 }

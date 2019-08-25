@@ -205,23 +205,55 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private void PatchViewport()
         {
-            // Patch camera values for 1P & 2P.
-            var cameraController = _engineInstance->Engine->MultiplayerRender->MultiplayerCameraController;
+            // Patch camera values for 2P Mode
+            var screenViewPort = _engineInstance->Engine->ScreenRender->ScreenViewport;
+            var allViewPorts = _engineInstance->Engine->ScreenRender->AllViewPorts;
 
-            cameraController->ScreenHeight = CurrentHeight;
-            cameraController->ScreenWidth = CurrentWidth;
-            cameraController->UnknownDefaultScreenWidth = CurrentWidth;
-            cameraController->UnknownDefaultScreenHeight = CurrentHeight;
-            cameraController->UnknownScreenHeight = CurrentHeight;
-            cameraController->UnknownScreenWidth = CurrentWidth;
+            int halfHeight = CurrentHeight / 2;
+            int halfWidth = CurrentWidth / 2;
 
-            cameraController->PlayerOneViewport.PlayerOneViewPortHeight = CurrentHeight;
-            cameraController->PlayerOneViewport.PlayerOneViewPortWidth = CurrentWidth / 2;
-            cameraController->PlayerThreeViewport.OffsetX = 0;
+            screenViewPort->Height = CurrentHeight;
+            screenViewPort->Width  = CurrentWidth;
 
-            cameraController->PlayerThreeViewport.PlayerOneViewPortHeight = CurrentHeight;
-            cameraController->PlayerThreeViewport.PlayerOneViewPortWidth = CurrentWidth / 2;
-            cameraController->PlayerThreeViewport.OffsetX = CurrentWidth / 2;
+            int cameraCount = *(int*)0xA60BE4;
+
+            // Split camera horizontally.
+            if (cameraCount <= 2)
+            {
+                // 2P, Horizontal Splitscreen
+                allViewPorts->P1Viewport.Height = CurrentHeight;
+                allViewPorts->P1Viewport.Width  = halfWidth;
+                allViewPorts->P1Viewport.OffsetX = 0;
+                allViewPorts->P1Viewport.OffsetY = 0;
+
+                allViewPorts->P2Viewport.Height = CurrentHeight;
+                allViewPorts->P2Viewport.Width = halfWidth;
+                allViewPorts->P2Viewport.OffsetX = (short)halfWidth;
+                allViewPorts->P2Viewport.OffsetY = 0;
+            }
+            else 
+            {
+                // 4P: Four quadrants
+                allViewPorts->P1Viewport.Height = halfHeight;
+                allViewPorts->P1Viewport.Width = halfWidth;
+                allViewPorts->P1Viewport.OffsetX = 0;
+                allViewPorts->P1Viewport.OffsetY = 0;
+
+                allViewPorts->P2Viewport.Height = halfHeight;
+                allViewPorts->P2Viewport.Width = halfWidth;
+                allViewPorts->P2Viewport.OffsetX = (short)halfWidth;
+                allViewPorts->P2Viewport.OffsetY = 0;
+
+                allViewPorts->P3Viewport.Height = halfHeight;
+                allViewPorts->P3Viewport.Width = halfWidth;
+                allViewPorts->P3Viewport.OffsetX = 0;
+                allViewPorts->P3Viewport.OffsetY = (short)halfHeight;
+
+                allViewPorts->P4Viewport.Height = halfHeight;
+                allViewPorts->P4Viewport.Width = halfWidth;
+                allViewPorts->P4Viewport.OffsetX = (short)(halfWidth);
+                allViewPorts->P4Viewport.OffsetY = (short)(halfHeight);
+            }
         }
 
 
