@@ -38,7 +38,7 @@ namespace Heroes.Graphics.Essentials
                 _crashFixHook = new StageLoadCrashFixHook(hooks);
 
             _clippingPlanesHook = new ClippingPlanesHook(_config.AspectRatioLimit, hooks);
-            _aspectRatioHook = new AspectRatioHook(_config.AspectRatioLimit, hooks);
+            _aspectRatioHook    = new AspectRatioHook(_config.AspectRatioLimit, hooks);
 
             _resolutionVariablePatcher  = new ResolutionVariablePatcher(_config.AspectRatioLimit);
             _renderHooks                = new RenderHooks(_config.AspectRatioLimit, hooks);

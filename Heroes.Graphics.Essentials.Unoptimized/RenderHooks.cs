@@ -8,6 +8,8 @@ using Heroes.Graphics.Essentials.Shared.Math;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Hooks.Definitions.X86;
 using Reloaded.Hooks.ReloadedII.Interfaces;
+using Reloaded.Memory.Kernel32;
+using Reloaded.Memory.Sources;
 
 namespace Heroes.Graphics.Essentials.Hooks
 {
@@ -20,9 +22,33 @@ namespace Heroes.Graphics.Essentials.Hooks
         private int CurrentWidth { get; set; }
 
         // Game's
+        // Note: Float values are shared between multiple pieces of game code, must only modify them during when relevant code is executed.
+        const float DefaultPickupBoxSeparation = 52.0F;
+        const float DefaultMissionDescriptionX = 0.6499670148F;
+        const float DefaultMissionDescriptionY = 0.8666300178F;
+        const float DefaultMissionDescriptionWidth = 0.400000006F;
+        const float DefaultMissionDescriptionHeight = 0.06666664779F;
+        const float DefaultResultScreenDotsHorizontalSeparation = 0.03400000185F;
+        const float DefaultResultScreenDotsVerticalSeparation = 0.06700000167F;
+        const float DefaultResultScreenDotsHeight = 0.01669999957F;
+        const float DefaultResultScreenDotsWidth = 0.01250000019F;
+
+        private readonly float* _descriptionX = (float*)0x78A4EC;
+        private readonly float* _descriptionY = (float*)0x78A4E8;
+        private readonly float* _descriptionWidth = (float*)0x745F3C;
+        private readonly float* _descriptionHeight = (float*)0x78A4E4;
+        private readonly float* _pickupBoxSeparation = (float*)0x78A618;
+        private readonly float* _dotsVertSeparation = (float*)0x78A504;
+        private readonly float* _dotsHorzSeparation = (float*)0x78A248;
+        private readonly float* _dotsHeight = (float*)0x78A508;
+        private readonly float* _dotsWidth = (float*)0x78A31C;
+
         private RwEngineInstance* _engineInstance = (RwEngineInstance*)0x008E0A4C;
 
+        // Replace constants used in calculating titlecard text position.
+
         /* Ours */
+        private Memory _memory;
         private IHook<sub_422AF0> _draw2PViewPortHook;
         private IHook<sub_5263C0> _drawSpecialStageGaugeHook;
         private IHook<sub_526280> _drawSpecialStageBarHook;
@@ -36,6 +62,8 @@ namespace Heroes.Graphics.Essentials.Hooks
         private IHook<sub_526F60> _drawSpecialStageLinkHook;
         private IHook<sub_44EAC0> _drawNowLoadingHook;
         private IHook<sub_4545F0> _executeCreditsHook;
+        private IHook<sub_438A90> _drawResultScreenDotsHook;
+        private IHook<DrawPowerupBox> _drawPowerupBoxHook;
         private sub_651E20        _getVertexBufferSubmission;
 
         private Queue<bool> _shiftOrthographicProjection = new Queue<bool>();
@@ -45,6 +73,7 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         public RenderHooks(float aspectRatioLimit, IReloadedHooks hooks)
         {
+            _memory = Memory.CurrentProcess;
             _aspectConverter = new AspectConverter(aspectRatioLimit);
             _draw2PViewPortHook = hooks.CreateHook<sub_422AF0>(Draw2PViewportHook, 0x422AF0).Activate();
             _drawSpecialStageGaugeHook = hooks.CreateHook<sub_5263C0>(DrawSpecialStageGaugeImpl, 0x5263C0).Activate();
@@ -60,6 +89,18 @@ namespace Heroes.Graphics.Essentials.Hooks
             _drawNowLoadingHook = hooks.CreateHook<sub_44EAC0>(DrawNowLoadingImpl, 0x44EAC0).Activate();
             _executeCreditsHook = hooks.CreateHook<sub_4545F0>(ExecuteCredits, 0x4545F0).Activate();
             _drawSpecialStageEmeraldIndicatorHook = hooks.CreateHook<sub_458920>(DrawSpecialStageEmeraldImpl, 0x458920).Activate();
+            _drawResultScreenDotsHook = hooks.CreateHook<sub_438A90>(DrawResultScreenDotsImpl, 0x438A90).Activate();
+            _drawPowerupBoxHook = hooks.CreateHook<DrawPowerupBox>(DrawPowerupBoxImpl, 0x479AB0).Activate();
+
+            _memory.ChangePermission((IntPtr) _descriptionX, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _descriptionY, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _descriptionWidth, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _descriptionHeight, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _pickupBoxSeparation, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsVertSeparation, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsHorzSeparation, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsHeight, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsWidth, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
         }
 
         public void SubscribeToResizeEventHook(ResizeEventHook hook)
@@ -97,7 +138,22 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private int DrawTitlecardElementsImpl(int thisPtr)
         {
-            return ExecuteWithScaleResolution(() => _drawTitlecardElementsHook.OriginalFunction(thisPtr));
+            *_descriptionWidth  =  _aspectConverter.ScaleByRelativeAspectX(DefaultMissionDescriptionWidth, RelativeAspectRatio, ActualAspectRatio);
+            *_descriptionHeight =  _aspectConverter.ScaleByRelativeAspectY(DefaultMissionDescriptionHeight, RelativeAspectRatio, ActualAspectRatio);
+            var additionalBorderX = _aspectConverter.GetBorderWidthX (ActualAspectRatio, AspectConverter.GameCanvasHeight) / 2F / AspectConverter.GameCanvasWidth;
+            var additionalBorderY = _aspectConverter.GetBorderHeightY(ActualAspectRatio, AspectConverter.GameCanvasWidth) / 2F / AspectConverter.GameCanvasHeight;
+
+            *_descriptionX = _aspectConverter.ScaleByRelativeAspectX(DefaultMissionDescriptionX, RelativeAspectRatio, ActualAspectRatio) + _aspectConverter.ScaleByRelativeAspectX(additionalBorderX, RelativeAspectRatio, ActualAspectRatio);
+            *_descriptionY = _aspectConverter.ScaleByRelativeAspectY(DefaultMissionDescriptionY, RelativeAspectRatio, ActualAspectRatio) + _aspectConverter.ScaleByRelativeAspectY(additionalBorderY, RelativeAspectRatio, ActualAspectRatio); ;
+            
+            var retVal = ExecuteWithScaleResolution(() => _drawTitlecardElementsHook.OriginalFunction(thisPtr));
+
+            *_descriptionWidth = DefaultMissionDescriptionWidth;
+            *_descriptionHeight = DefaultMissionDescriptionHeight;
+            *_descriptionX = DefaultMissionDescriptionX;
+            *_descriptionY = DefaultMissionDescriptionY;
+
+            return retVal;
         }
 
         private int DrawSmallFrameImpl(int ebx, float x, float y, float width, float height, int a5)
@@ -188,7 +244,7 @@ namespace Heroes.Graphics.Essentials.Hooks
                 a5, a6, a7, a8, a9);
         }
 
-        private byte Draw2PViewportHook()
+        private int Draw2PViewportHook()
         {
             PatchViewport();
             return _draw2PViewPortHook.OriginalFunction();
@@ -207,10 +263,10 @@ namespace Heroes.Graphics.Essentials.Hooks
         {
             // Patch camera values for 2P Mode
             var screenViewPort = _engineInstance->Engine->ScreenRender->ScreenViewport;
-            var allViewPorts = _engineInstance->Engine->ScreenRender->AllViewPorts;
+            var allViewPorts   = _engineInstance->Engine->ScreenRender->AllViewPorts;
 
             int halfHeight = CurrentHeight / 2;
-            int halfWidth = CurrentWidth / 2;
+            int halfWidth  = CurrentWidth / 2;
 
             screenViewPort->Height = CurrentHeight;
             screenViewPort->Width  = CurrentWidth;
@@ -256,6 +312,22 @@ namespace Heroes.Graphics.Essentials.Hooks
             }
         }
 
+        private void* DrawResultScreenDotsImpl()
+        {
+            _memory.SafeWrite((IntPtr)_dotsVertSeparation, _aspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsHorzSeparation, _aspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsHeight, _aspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsWidth, _aspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
+
+            var returnValue = _drawResultScreenDotsHook.OriginalFunction();
+
+            _memory.SafeWrite((IntPtr)_dotsVertSeparation, DefaultResultScreenDotsVerticalSeparation);
+            _memory.SafeWrite((IntPtr)_dotsHorzSeparation, DefaultResultScreenDotsHorizontalSeparation);
+            _memory.SafeWrite((IntPtr)_dotsHeight, DefaultResultScreenDotsHeight);
+            _memory.SafeWrite((IntPtr)_dotsWidth, DefaultResultScreenDotsWidth);
+
+            return returnValue;
+        }
 
         /// <summary>
         /// Executes a function, changing the resolution variables before and after execution.
@@ -276,6 +348,15 @@ namespace Heroes.Graphics.Essentials.Hooks
             Variables.ResolutionY.SetValue(ref backupY);
 
             return result;
+        }
+
+        private void* DrawPowerupBoxImpl(void* preserveEax, float probablyX, float probablyY, float size)
+        {
+            *_pickupBoxSeparation = _aspectConverter.ScaleByRelativeAspectX(DefaultPickupBoxSeparation, RelativeAspectRatio, ActualAspectRatio);
+            var retVal = _drawPowerupBoxHook.OriginalFunction(preserveEax, probablyX, probablyY, _aspectConverter.ScaleByRelativeAspectX(size, RelativeAspectRatio, ActualAspectRatio));
+            *_pickupBoxSeparation = _aspectConverter.ScaleByRelativeAspectX(DefaultPickupBoxSeparation, RelativeAspectRatio, ActualAspectRatio);
+
+            return retVal;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -321,7 +402,7 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [Function(CallingConventions.Cdecl)]
-        public delegate byte sub_422AF0();
+        public delegate int sub_422AF0();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [Function(CallingConventions.MicrosoftThiscall)]
@@ -334,5 +415,13 @@ namespace Heroes.Graphics.Essentials.Hooks
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [Function(new[] { FunctionAttribute.Register.eax, FunctionAttribute.Register.esi }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
         public delegate void* sub_458920(void* preserveEax, void* preserveEsi, float x, float y, float width, float height);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [Function(CallingConventions.Cdecl)]
+        public delegate void* sub_438A90();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [Function(new[] { FunctionAttribute.Register.eax }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
+        public delegate void* DrawPowerupBox(void* preseveEax, float probablyX, float probablyY, float size); // 479AB0
     }
 }
