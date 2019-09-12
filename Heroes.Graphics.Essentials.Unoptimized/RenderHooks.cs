@@ -8,8 +8,10 @@ using Heroes.Graphics.Essentials.Shared.Math;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Hooks.Definitions.X86;
 using Reloaded.Hooks.ReloadedII.Interfaces;
+using Reloaded.Memory.Interop;
 using Reloaded.Memory.Kernel32;
 using Reloaded.Memory.Sources;
+using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
 
 namespace Heroes.Graphics.Essentials.Hooks
 {
@@ -55,7 +57,7 @@ namespace Heroes.Graphics.Essentials.Hooks
         private IHook<sub_422A70> _draw2PStatusHook;
         private IHook<_rwD3D8Im2DRenderPrimitive> _renderPrimitiveHook;
         private IHook<sub_644450> _renderVideoHook;
-        private IHook<sub_458920> _drawSpecialStageEmeraldIndicatorHook;
+        private IAsmHook _drawSpecialStageEmeraldIndicatorHook;
         private IHook<DrawFullVideoFrame> _drawFullVideoFrameHook;
         private IHook<DrawSmallFrame> _drawSmallVideoFrameHook;
         private IHook<sub_442850> _drawTitlecardElementsHook;
@@ -70,6 +72,8 @@ namespace Heroes.Graphics.Essentials.Hooks
         private bool _shiftProjectionFlag;
 
         private AspectConverter _aspectConverter;
+        private Pinnable<IntPtr> _addressOfHook;
+        private IReverseWrapper<DrawEmeraldHook> _drawEmeraldHookReverseWrap;
 
         public RenderHooks(float aspectRatioLimit, IReloadedHooks hooks)
         {
@@ -88,9 +92,37 @@ namespace Heroes.Graphics.Essentials.Hooks
             _getVertexBufferSubmission = hooks.CreateWrapper<sub_651E20>(0x651E20, out _);
             _drawNowLoadingHook = hooks.CreateHook<sub_44EAC0>(DrawNowLoadingImpl, 0x44EAC0).Activate();
             _executeCreditsHook = hooks.CreateHook<sub_4545F0>(ExecuteCredits, 0x4545F0).Activate();
-            _drawSpecialStageEmeraldIndicatorHook = hooks.CreateHook<sub_458920>(DrawSpecialStageEmeraldImpl, 0x458920).Activate();
             _drawResultScreenDotsHook = hooks.CreateHook<sub_438A90>(DrawResultScreenDotsImpl, 0x438A90).Activate();
             _drawPowerupBoxHook = hooks.CreateHook<DrawPowerupBox>(DrawPowerupBoxImpl, 0x479AB0).Activate();
+
+            _drawEmeraldHookReverseWrap = hooks.CreateReverseWrapper<DrawEmeraldHook>(DrawSpecialStageEmeraldImpl);
+            _addressOfHook = new Pinnable<IntPtr>(_drawEmeraldHookReverseWrap.WrapperPointer);
+            _drawSpecialStageEmeraldIndicatorHook = hooks.CreateAsmHook(new[] {
+                "use32",    // Offset to first param (after execution of code)
+                "push eax", // + 8
+                "push esi", // + 12
+                "push ecx", // + 16
+                "push edx", // + 20
+
+                /* Push address of stack parameters up stack. */
+                "lea edx, [esp + 32]",
+                "lea ecx, [esp + 28]",
+                "lea ebx, [esp + 24]",
+                "lea eax, [esp + 20]",
+                "push edx",
+                "push ecx",
+                "push ebx",
+                "push eax",
+
+                $"call dword [0x{(long)_addressOfHook.Pointer:X}]",
+                "add esp, 16",
+
+                "pop edx",
+                "pop ecx",
+                "pop esi",
+                "pop eax"
+            }, 0x458920).Activate();
+
 
             _memory.ChangePermission((IntPtr) _descriptionX, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
             _memory.ChangePermission((IntPtr) _descriptionY, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
@@ -250,13 +282,12 @@ namespace Heroes.Graphics.Essentials.Hooks
             return _draw2PViewPortHook.OriginalFunction();
         }
 
-        private void* DrawSpecialStageEmeraldImpl(void* preserveEax, void* preserveEsi, float x, float y, float width, float height)
+        private void DrawSpecialStageEmeraldImpl(float* x, float* y, float* width, float* height)
         {
-            return _drawSpecialStageEmeraldIndicatorHook.OriginalFunction(preserveEax, preserveEsi,
-                _aspectConverter.ProjectFromOldToNewCanvasX(x, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ProjectFromOldToNewCanvasY(y, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio));
+            *x = _aspectConverter.ProjectFromOldToNewCanvasX(*x, RelativeAspectRatio, ActualAspectRatio);
+            *y = _aspectConverter.ProjectFromOldToNewCanvasY(*y, RelativeAspectRatio, ActualAspectRatio);
+            *width = _aspectConverter.ScaleByRelativeAspectX(*width, RelativeAspectRatio, ActualAspectRatio);
+            *height = _aspectConverter.ScaleByRelativeAspectY(*height, RelativeAspectRatio, ActualAspectRatio);
         }
 
         private void PatchViewport()
@@ -423,5 +454,10 @@ namespace Heroes.Graphics.Essentials.Hooks
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [Function(new[] { FunctionAttribute.Register.eax }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
         public delegate void* DrawPowerupBox(void* preseveEax, float probablyX, float probablyY, float size); // 479AB0
+
+        /* Custom Delegates */
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [Function(CallingConventions.Cdecl)]
+        public delegate void DrawEmeraldHook(float* x, float* y, float* width, float* height);
     }
 }

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Optimize>false</Optimize>
-    <Configurations>Debug</Configurations>
+    <Optimize>true</Optimize>
+    <Configurations>Debug;Release</Configurations>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Reloaded.Hooks.Definitions"/>
+    <Reference Include="Reloaded.Hooks.Definitions" />
   </ItemGroup>
 
 </Project>

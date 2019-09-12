@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Heroes.Graphics.Essentials"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Heroes.Graphics.Essentials.Definitions", "Heroes.Graphics.Essentials.Shared\Heroes.Graphics.Essentials.Definitions.csproj", "{3C5F7881-EDB1-4102-BD8E-16DE8CCE5BBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heroes.Graphics.Essentials.Hooks", "Heroes.Graphics.Essentials.Unoptimized\Heroes.Graphics.Essentials.Hooks.csproj", "{3CD3EEAB-A451-477E-A274-53B1886289A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Heroes.Graphics.Essentials.Hooks", "Heroes.Graphics.Essentials.Unoptimized\Heroes.Graphics.Essentials.Hooks.csproj", "{3CD3EEAB-A451-477E-A274-53B1886289A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,8 +23,8 @@ Global
 		{3C5F7881-EDB1-4102-BD8E-16DE8CCE5BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5F7881-EDB1-4102-BD8E-16DE8CCE5BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5F7881-EDB1-4102-BD8E-16DE8CCE5BBF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CD3EEAB-A451-477E-A274-53B1886289A6}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{3CD3EEAB-A451-477E-A274-53B1886289A6}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{3CD3EEAB-A451-477E-A274-53B1886289A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD3EEAB-A451-477E-A274-53B1886289A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CD3EEAB-A451-477E-A274-53B1886289A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CD3EEAB-A451-477E-A274-53B1886289A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
