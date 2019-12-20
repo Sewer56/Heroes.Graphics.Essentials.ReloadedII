@@ -16,7 +16,7 @@ namespace Heroes.Graphics.Essentials.Hooks
     /// </summary>
     public unsafe class ClippingPlanesHook
     {
-        public float AspectRatioLimit                                   { get; private set; }
+        public float AspectRatioLimit                                   { get; set; }
         public IHook<CameraBuildPerspClipPlanes> BuildClipPlanesHook    { get; private set; }
 
         public ClippingPlanesHook(float aspectLimit, IReloadedHooks hooks)

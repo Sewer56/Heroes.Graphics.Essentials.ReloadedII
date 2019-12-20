@@ -13,7 +13,7 @@ namespace Heroes.Graphics.Essentials.Hooks
     public unsafe class AspectRatioHook
     {
         public float AspectRatioLimit { get; set; }
-        public IHook<RwCameraSetViewWindow> SetViewWindowHook { get; set; }
+        public IHook<RwCameraSetViewWindow> SetViewWindowHook { get; private set; }
 
         public AspectRatioHook(float aspectRatioLimit, IReloadedHooks hooks)
         {

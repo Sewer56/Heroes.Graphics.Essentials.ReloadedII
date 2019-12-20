@@ -17,6 +17,8 @@ namespace Heroes.Graphics.Essentials.Hooks
 {
     public unsafe class RenderHooks
     {
+        public AspectConverter AspectConverter { get; private set; }
+
         /* Sizes Received From Events */
         private float ActualAspectRatio { get; set; }
         private float RelativeAspectRatio { get; set; }
@@ -71,14 +73,13 @@ namespace Heroes.Graphics.Essentials.Hooks
         private Queue<bool> _shiftOrthographicProjection = new Queue<bool>();
         private bool _shiftProjectionFlag;
 
-        private AspectConverter _aspectConverter;
         private Pinnable<IntPtr> _addressOfHook;
         private IReverseWrapper<DrawEmeraldHook> _drawEmeraldHookReverseWrap;
 
         public RenderHooks(float aspectRatioLimit, IReloadedHooks hooks)
         {
             _memory = Memory.CurrentProcess;
-            _aspectConverter = new AspectConverter(aspectRatioLimit);
+            AspectConverter = new AspectConverter(aspectRatioLimit);
             _draw2PViewPortHook = hooks.CreateHook<sub_422AF0>(Draw2PViewportHook, 0x422AF0).Activate();
             _drawSpecialStageGaugeHook = hooks.CreateHook<sub_5263C0>(DrawSpecialStageGaugeImpl, 0x5263C0).Activate();
             _drawSpecialStageBarHook = hooks.CreateHook<sub_526280>(DrawSpecialStageBarImpl, 0x526280, 0xD).Activate();
@@ -170,13 +171,13 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private int DrawTitlecardElementsImpl(int thisPtr)
         {
-            *_descriptionWidth  =  _aspectConverter.ScaleByRelativeAspectX(DefaultMissionDescriptionWidth, RelativeAspectRatio, ActualAspectRatio);
-            *_descriptionHeight =  _aspectConverter.ScaleByRelativeAspectY(DefaultMissionDescriptionHeight, RelativeAspectRatio, ActualAspectRatio);
-            var additionalBorderX = _aspectConverter.GetBorderWidthX (ActualAspectRatio, AspectConverter.GameCanvasHeight) / 2F / AspectConverter.GameCanvasWidth;
-            var additionalBorderY = _aspectConverter.GetBorderHeightY(ActualAspectRatio, AspectConverter.GameCanvasWidth) / 2F / AspectConverter.GameCanvasHeight;
+            *_descriptionWidth  =  AspectConverter.ScaleByRelativeAspectX(DefaultMissionDescriptionWidth, RelativeAspectRatio, ActualAspectRatio);
+            *_descriptionHeight =  AspectConverter.ScaleByRelativeAspectY(DefaultMissionDescriptionHeight, RelativeAspectRatio, ActualAspectRatio);
+            var additionalBorderX = AspectConverter.GetBorderWidthX (ActualAspectRatio, AspectConverter.GameCanvasHeight) / 2F / AspectConverter.GameCanvasWidth;
+            var additionalBorderY = AspectConverter.GetBorderHeightY(ActualAspectRatio, AspectConverter.GameCanvasWidth) / 2F / AspectConverter.GameCanvasHeight;
 
-            *_descriptionX = _aspectConverter.ScaleByRelativeAspectX(DefaultMissionDescriptionX, RelativeAspectRatio, ActualAspectRatio) + _aspectConverter.ScaleByRelativeAspectX(additionalBorderX, RelativeAspectRatio, ActualAspectRatio);
-            *_descriptionY = _aspectConverter.ScaleByRelativeAspectY(DefaultMissionDescriptionY, RelativeAspectRatio, ActualAspectRatio) + _aspectConverter.ScaleByRelativeAspectY(additionalBorderY, RelativeAspectRatio, ActualAspectRatio); ;
+            *_descriptionX = AspectConverter.ScaleByRelativeAspectX(DefaultMissionDescriptionX, RelativeAspectRatio, ActualAspectRatio) + AspectConverter.ScaleByRelativeAspectX(additionalBorderX, RelativeAspectRatio, ActualAspectRatio);
+            *_descriptionY = AspectConverter.ScaleByRelativeAspectY(DefaultMissionDescriptionY, RelativeAspectRatio, ActualAspectRatio) + AspectConverter.ScaleByRelativeAspectY(additionalBorderY, RelativeAspectRatio, ActualAspectRatio); ;
             
             var retVal = ExecuteWithScaleResolution(() => _drawTitlecardElementsHook.OriginalFunction(thisPtr));
 
@@ -190,16 +191,16 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private int DrawSmallFrameImpl(int ebx, float x, float y, float width, float height, int a5)
         {
-            x += _aspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2;
-            y += _aspectConverter.GetBorderHeightY(ActualAspectRatio, CurrentWidth) / 2;
+            x += AspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2;
+            y += AspectConverter.GetBorderHeightY(ActualAspectRatio, CurrentWidth) / 2;
 
             return _drawSmallVideoFrameHook.OriginalFunction(ebx, x, y, width, height, a5);
         }
 
         private int DrawFullVideoFrameHookImpl(int ebx, float x, float y, float width, float height, int a5, float a6, float a7)
         {
-            x = _aspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2;
-            y = _aspectConverter.GetBorderHeightY(ActualAspectRatio, CurrentWidth) / 2;
+            x = AspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2;
+            y = AspectConverter.GetBorderHeightY(ActualAspectRatio, CurrentWidth) / 2;
 
             return _drawFullVideoFrameHook.OriginalFunction(ebx, x, y, width, height, a5, a6, a7);
         }
@@ -228,8 +229,8 @@ namespace Heroes.Graphics.Essentials.Hooks
                     vertexBufferSubmissionThing = _getVertexBufferSubmission();
 
                 // Convert.ToInt32 performs rounding!
-                var extraLeftBorder = (short)(Convert.ToInt32(_aspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2));
-                var extraTopBorder = (short)(Convert.ToInt32(_aspectConverter.GetBorderHeightY(ActualAspectRatio, CurrentWidth) / 2));
+                var extraLeftBorder = (short)(Convert.ToInt32(AspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2));
+                var extraTopBorder = (short)(Convert.ToInt32(AspectConverter.GetBorderHeightY(ActualAspectRatio, CurrentWidth) / 2));
 
                 vertexBufferSubmissionThing->X += extraLeftBorder;
                 vertexBufferSubmissionThing->Y += extraTopBorder;
@@ -249,10 +250,10 @@ namespace Heroes.Graphics.Essentials.Hooks
         {
             _shiftOrthographicProjection.Enqueue(true);
             return _draw2PStatusHook.OriginalFunction(preserveEax,
-                _aspectConverter.ScaleByRelativeAspectX(x, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectY(y, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio));
+                AspectConverter.ScaleByRelativeAspectX(x, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectY(y, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio));
         }
 
 
@@ -260,19 +261,19 @@ namespace Heroes.Graphics.Essentials.Hooks
         private int DrawSpecialStageBarImpl(int preserveEax, float x, float y, float width, float height)
         {
             return _drawSpecialStageBarHook.OriginalFunction(preserveEax,
-                _aspectConverter.ProjectFromOldToNewCanvasX(x, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ProjectFromOldToNewCanvasY(y, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio));
+                AspectConverter.ProjectFromOldToNewCanvasX(x, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ProjectFromOldToNewCanvasY(y, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio));
         }
 
         private int DrawSpecialStageGaugeImpl(int preserveEax, float x, float y, float width, float height, int a5, int a6, int a7, float a8, float a9)
         {
             return _drawSpecialStageGaugeHook.OriginalFunction(preserveEax,
-                _aspectConverter.ProjectFromOldToNewCanvasX(x, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ProjectFromOldToNewCanvasY(y, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
-                _aspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ProjectFromOldToNewCanvasX(x, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ProjectFromOldToNewCanvasY(y, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio),
+                AspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio),
                 a5, a6, a7, a8, a9);
         }
 
@@ -284,10 +285,10 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private void DrawSpecialStageEmeraldImpl(float* x, float* y, float* width, float* height)
         {
-            *x = _aspectConverter.ProjectFromOldToNewCanvasX(*x, RelativeAspectRatio, ActualAspectRatio);
-            *y = _aspectConverter.ProjectFromOldToNewCanvasY(*y, RelativeAspectRatio, ActualAspectRatio);
-            *width = _aspectConverter.ScaleByRelativeAspectX(*width, RelativeAspectRatio, ActualAspectRatio);
-            *height = _aspectConverter.ScaleByRelativeAspectY(*height, RelativeAspectRatio, ActualAspectRatio);
+            *x = AspectConverter.ProjectFromOldToNewCanvasX(*x, RelativeAspectRatio, ActualAspectRatio);
+            *y = AspectConverter.ProjectFromOldToNewCanvasY(*y, RelativeAspectRatio, ActualAspectRatio);
+            *width = AspectConverter.ScaleByRelativeAspectX(*width, RelativeAspectRatio, ActualAspectRatio);
+            *height = AspectConverter.ScaleByRelativeAspectY(*height, RelativeAspectRatio, ActualAspectRatio);
         }
 
         private void PatchViewport()
@@ -345,10 +346,10 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private void* DrawResultScreenDotsImpl()
         {
-            _memory.SafeWrite((IntPtr)_dotsVertSeparation, _aspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
-            _memory.SafeWrite((IntPtr)_dotsHorzSeparation, _aspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
-            _memory.SafeWrite((IntPtr)_dotsHeight, _aspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
-            _memory.SafeWrite((IntPtr)_dotsWidth, _aspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsVertSeparation, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsHorzSeparation, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsHeight, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
+            _memory.SafeWrite((IntPtr)_dotsWidth, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
 
             var returnValue = _drawResultScreenDotsHook.OriginalFunction();
 
@@ -368,8 +369,8 @@ namespace Heroes.Graphics.Essentials.Hooks
             Variables.ResolutionX.GetValue(out var backupX);
             Variables.ResolutionY.GetValue(out var backupY);
 
-            int newX = (int)_aspectConverter.ScaleByRelativeAspectX(backupX, RelativeAspectRatio, ActualAspectRatio);
-            int newY = (int)_aspectConverter.ScaleByRelativeAspectY(backupY, RelativeAspectRatio, ActualAspectRatio);
+            int newX = (int)AspectConverter.ScaleByRelativeAspectX(backupX, RelativeAspectRatio, ActualAspectRatio);
+            int newY = (int)AspectConverter.ScaleByRelativeAspectY(backupY, RelativeAspectRatio, ActualAspectRatio);
             Variables.ResolutionX.SetValue(ref newX);
             Variables.ResolutionY.SetValue(ref newY);
 
@@ -383,9 +384,9 @@ namespace Heroes.Graphics.Essentials.Hooks
 
         private void* DrawPowerupBoxImpl(void* preserveEax, float probablyX, float probablyY, float size)
         {
-            *_pickupBoxSeparation = _aspectConverter.ScaleByRelativeAspectX(DefaultPickupBoxSeparation, RelativeAspectRatio, ActualAspectRatio);
-            var retVal = _drawPowerupBoxHook.OriginalFunction(preserveEax, probablyX, probablyY, _aspectConverter.ScaleByRelativeAspectX(size, RelativeAspectRatio, ActualAspectRatio));
-            *_pickupBoxSeparation = _aspectConverter.ScaleByRelativeAspectX(DefaultPickupBoxSeparation, RelativeAspectRatio, ActualAspectRatio);
+            *_pickupBoxSeparation = AspectConverter.ScaleByRelativeAspectX(DefaultPickupBoxSeparation, RelativeAspectRatio, ActualAspectRatio);
+            var retVal = _drawPowerupBoxHook.OriginalFunction(preserveEax, probablyX, probablyY, AspectConverter.ScaleByRelativeAspectX(size, RelativeAspectRatio, ActualAspectRatio));
+            *_pickupBoxSeparation = AspectConverter.ScaleByRelativeAspectX(DefaultPickupBoxSeparation, RelativeAspectRatio, ActualAspectRatio);
 
             return retVal;
         }

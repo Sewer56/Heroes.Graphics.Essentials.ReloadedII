@@ -10,16 +10,6 @@ namespace Heroes.Graphics.Essentials.Heroes
 {
     public unsafe class ResolutionVariablePatcher
     {
-
-
-        // Ours
-        private AspectConverter _aspectConverter;
-
-        public ResolutionVariablePatcher(float aspectRatioLimit)
-        {
-            _aspectConverter = new AspectConverter(aspectRatioLimit);
-        }
-
         public void SubscribeToResizeEventHook(ResizeEventHook hook)
         {
             hook.Resized += HookOnResized;

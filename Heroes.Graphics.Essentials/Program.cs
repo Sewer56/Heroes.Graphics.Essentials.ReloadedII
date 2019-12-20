@@ -17,9 +17,6 @@ namespace Heroes.Graphics.Essentials
 
         public void Start(IModLoaderV1 loader)
         {
-            #if DEBUG
-            Debugger.Launch();
-            #endif
             _modLoader = (IModLoader)loader;
             _modLoader.GetController<IReloadedHooks>().TryGetTarget(out _reloadedHooks);
 

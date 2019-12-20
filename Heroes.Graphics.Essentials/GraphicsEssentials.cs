@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Heroes.Graphics.Essentials.Config;
+using Heroes.Graphics.Essentials.Configuration;
 using Heroes.Graphics.Essentials.Heroes;
 using Heroes.Graphics.Essentials.Hooks;
 using Heroes.Graphics.Essentials.Shared;
 using Reloaded.Hooks.ReloadedII.Interfaces;
+using Reloaded.Mod.Interfaces;
 using Vanara.PInvoke;
 
 namespace Heroes.Graphics.Essentials
@@ -11,6 +13,8 @@ namespace Heroes.Graphics.Essentials
     public class GraphicsEssentials
     {
         private Config.Config _config;
+        private Configurator _configurator;
+
         private DefaultSettingsHook _defaultSettingsHook;
         private StageLoadCrashFixHook _crashFixHook;
         private ClippingPlanesHook _clippingPlanesHook;
@@ -22,7 +26,9 @@ namespace Heroes.Graphics.Essentials
 
         public GraphicsEssentials(string modFolder, IReloadedHooks hooks)
         {
-            _config = new ConfigReadWriter(modFolder).FromJson();
+            _configurator = new Configurator(modFolder);
+            _config = _configurator.GetConfiguration<Config.Config>(0);
+
             _defaultSettingsHook = new DefaultSettingsHook(_config.DefaultSettings, hooks);
 
             NativeResolutionPatcher.Patch(_config.Width, _config.Height);
@@ -40,7 +46,7 @@ namespace Heroes.Graphics.Essentials
             _clippingPlanesHook = new ClippingPlanesHook(_config.AspectRatioLimit, hooks);
             _aspectRatioHook    = new AspectRatioHook(_config.AspectRatioLimit, hooks);
 
-            _resolutionVariablePatcher  = new ResolutionVariablePatcher(_config.AspectRatioLimit);
+            _resolutionVariablePatcher  = new ResolutionVariablePatcher();
             _renderHooks                = new RenderHooks(_config.AspectRatioLimit, hooks);
 
             Task.Run(MessagePump);
