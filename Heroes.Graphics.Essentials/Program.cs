@@ -11,17 +11,15 @@ namespace Heroes.Graphics.Essentials
         private const string MyModId = "sonicheroes.essentials.graphics";
 
         private static IModLoader _modLoader;
-        private static IReloadedHooks _reloadedHooks; // Not using Weak Reference here is OK because ReloadedHooks is not unloadable.
-
         private GraphicsEssentials _graphicsEssentials;
 
         public void Start(IModLoaderV1 loader)
         {
             _modLoader = (IModLoader)loader;
-            _modLoader.GetController<IReloadedHooks>().TryGetTarget(out _reloadedHooks);
+            _modLoader.GetController<IReloadedHooks>().TryGetTarget(out var reloadedHooks);
 
             /* Your mod code starts here. */
-            _graphicsEssentials = new GraphicsEssentials(_modLoader.GetDirectoryForModId(MyModId), _reloadedHooks);
+            _graphicsEssentials = new GraphicsEssentials(_modLoader.GetDirectoryForModId(MyModId), reloadedHooks);
         }
 
         /* Mod loader actions. */
