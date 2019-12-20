@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Heroes.Graphics.Essentials.Shared;
-using Heroes.Graphics.Essentials.Shared.Heroes;
-using Heroes.Graphics.Essentials.Shared.Heroes.Structures;
-using Heroes.Graphics.Essentials.Shared.Math;
+using Heroes.Graphics.Essentials.Definitions;
+using Heroes.Graphics.Essentials.Definitions.Heroes;
+using Heroes.Graphics.Essentials.Definitions.Heroes.Structures;
+using Heroes.Graphics.Essentials.Definitions.Math;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Hooks.Definitions.X86;
-using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Memory.Interop;
 using Reloaded.Memory.Kernel32;
 using Reloaded.Memory.Sources;
 using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
 
-namespace Heroes.Graphics.Essentials.Hooks
+namespace Heroes.Graphics.Essentials.Heroes.Hooks
 {
     public unsafe class RenderHooks
     {

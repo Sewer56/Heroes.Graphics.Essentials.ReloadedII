@@ -1,7 +1,7 @@
 ﻿using System;
 using Reloaded.Memory.Sources;
 
-namespace Heroes.Graphics.Essentials.Heroes
+namespace Heroes.Graphics.Essentials.Heroes.Patches
 {
     public static class LoadTimeHack
     {

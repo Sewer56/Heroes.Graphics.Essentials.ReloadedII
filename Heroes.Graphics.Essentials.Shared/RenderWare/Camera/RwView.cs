@@ -1,4 +1,4 @@
-﻿namespace Heroes.Graphics.Essentials.Shared.RenderWare.Camera
+﻿namespace Heroes.Graphics.Essentials.Definitions.RenderWare.Camera
 {
     public struct RwView
     {

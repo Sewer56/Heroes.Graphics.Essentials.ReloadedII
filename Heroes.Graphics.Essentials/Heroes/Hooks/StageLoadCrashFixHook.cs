@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Heroes.Graphics.Essentials.Shared.Heroes;
-using Heroes.Graphics.Essentials.Shared.Math;
+using Heroes.Graphics.Essentials.Definitions.Heroes;
+using Heroes.Graphics.Essentials.Definitions.Math;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Hooks.Definitions.X86;
-using Reloaded.Hooks.ReloadedII.Interfaces;
 using Vanara.PInvoke;
 using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
 
-namespace Heroes.Graphics.Essentials.Hooks
+namespace Heroes.Graphics.Essentials.Heroes.Hooks
 {
     public class StageLoadCrashFixHook
     {

@@ -1,4 +1,4 @@
-﻿namespace Heroes.Graphics.Essentials.Shared.Heroes.Enums
+﻿namespace Heroes.Graphics.Essentials.Definitions.Heroes.Enums
 {
     public enum Language : byte
     {

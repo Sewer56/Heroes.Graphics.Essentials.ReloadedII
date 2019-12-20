@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using Heroes.Graphics.Essentials.Shared.RenderWare.Object;
+using Heroes.Graphics.Essentials.Definitions.RenderWare.Object;
 
-namespace Heroes.Graphics.Essentials.Shared.RenderWare.Camera
+namespace Heroes.Graphics.Essentials.Definitions.RenderWare.Camera
 {
     [StructLayout(LayoutKind.Sequential)]
     public unsafe struct RwObjectHasFrame

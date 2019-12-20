@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Heroes.Graphics.Essentials.Shared.RenderWare.Camera.Enum
+namespace Heroes.Graphics.Essentials.Definitions.RenderWare.Camera.Enum
 {
     public enum RwCameraProjection : int
     {

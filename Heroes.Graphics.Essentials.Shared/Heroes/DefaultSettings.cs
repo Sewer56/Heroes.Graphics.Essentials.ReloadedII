@@ -1,7 +1,7 @@
 ﻿using System;
-using Heroes.Graphics.Essentials.Shared.Heroes.Enums;
+using Heroes.Graphics.Essentials.Definitions.Heroes.Enums;
 
-namespace Heroes.Graphics.Essentials.Shared.Heroes
+namespace Heroes.Graphics.Essentials.Definitions.Heroes
 {
     /// <summary>
     /// Default Sonic Heroes configurations normally accessible from the launcher.

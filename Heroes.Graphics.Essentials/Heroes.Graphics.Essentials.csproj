@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Heroes.Graphics.Essentials.Shared\Heroes.Graphics.Essentials.Definitions.csproj" />
-    <ProjectReference Include="..\Heroes.Graphics.Essentials.Unoptimized\Heroes.Graphics.Essentials.Hooks.csproj" />
   </ItemGroup>
 
 </Project>

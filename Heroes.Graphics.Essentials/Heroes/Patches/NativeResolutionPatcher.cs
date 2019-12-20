@@ -1,6 +1,6 @@
-﻿using Heroes.Graphics.Essentials.Shared.Heroes.Structures;
+﻿using Heroes.Graphics.Essentials.Definitions.Heroes.Structures;
 
-namespace Heroes.Graphics.Essentials.Heroes
+namespace Heroes.Graphics.Essentials.Heroes.Patches
 {
     /// <summary>
     /// Utility class which patches all of the hardcoded sets of resolutions to a specific resolution.

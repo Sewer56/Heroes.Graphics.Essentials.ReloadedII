@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Heroes.Graphics.Essentials.Config;
 using Heroes.Graphics.Essentials.Configuration;
+using Heroes.Graphics.Essentials.Definitions;
 using Heroes.Graphics.Essentials.Heroes;
-using Heroes.Graphics.Essentials.Hooks;
-using Heroes.Graphics.Essentials.Shared;
+using Heroes.Graphics.Essentials.Heroes.Hooks;
+using Heroes.Graphics.Essentials.Heroes.Patches;
 using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
 using Vanara.PInvoke;

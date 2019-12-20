@@ -1,7 +1,7 @@
 ﻿using Reloaded.Memory.Pointers;
 using Vanara.PInvoke;
 
-namespace Heroes.Graphics.Essentials.Shared.Heroes
+namespace Heroes.Graphics.Essentials.Definitions.Heroes
 {
     public static class Variables
     {

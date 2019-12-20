@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Heroes.Graphics.Essentials.Shared.Heroes.Structures
+namespace Heroes.Graphics.Essentials.Definitions.Heroes.Structures
 {
     // TODO: Snoop around RW SDK and find real names here.
     public unsafe struct RwEngineInstance

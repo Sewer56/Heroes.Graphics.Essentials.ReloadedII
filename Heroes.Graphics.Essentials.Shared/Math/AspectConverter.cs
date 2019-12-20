@@ -1,7 +1,7 @@
-﻿using Heroes.Graphics.Essentials.Shared.Math.Structs;
+﻿using Heroes.Graphics.Essentials.Definitions.Math.Structs;
 using Vanara.PInvoke;
 
-namespace Heroes.Graphics.Essentials.Shared.Math
+namespace Heroes.Graphics.Essentials.Definitions.Math
 {
     public class AspectConverter
     {

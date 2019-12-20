@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Heroes.Graphics.Essentials.Shared.RenderWare.Camera
+namespace Heroes.Graphics.Essentials.Definitions.RenderWare.Camera
 {
     /// <summary>
     /// This type represents a 3D axis-aligned bounding-box

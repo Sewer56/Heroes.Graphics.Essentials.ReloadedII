@@ -1,4 +1,4 @@
-﻿namespace Heroes.Graphics.Essentials.Shared.Heroes.Structures
+﻿namespace Heroes.Graphics.Essentials.Definitions.Heroes.Structures
 {
     /// <summary>
     /// Replicates resolution struct stored in the Sonic Heroes executable.

@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using Heroes.Graphics.Essentials.Shared.RenderWare.Camera.Enum;
+using Heroes.Graphics.Essentials.Definitions.RenderWare.Camera.Enum;
 
-namespace Heroes.Graphics.Essentials.Shared.RenderWare.Camera
+namespace Heroes.Graphics.Essentials.Definitions.RenderWare.Camera
 {
     public unsafe struct RwCamera
     {

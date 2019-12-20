@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using Heroes.Graphics.Essentials.Configuration;
-using Heroes.Graphics.Essentials.Shared.Heroes;
+using Heroes.Graphics.Essentials.Definitions.Heroes;
 
 namespace Heroes.Graphics.Essentials.Config
 {

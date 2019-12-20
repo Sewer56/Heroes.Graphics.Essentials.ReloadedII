@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Heroes.Graphics.Essentials.Shared.Heroes;
-using Heroes.Graphics.Essentials.Shared.Math;
+﻿using System.Diagnostics;
+using Heroes.Graphics.Essentials.Definitions.Heroes;
+using Heroes.Graphics.Essentials.Definitions.Math;
 using Vanara.PInvoke;
 
-namespace Heroes.Graphics.Essentials.Shared
+namespace Heroes.Graphics.Essentials.Definitions
 {
     public class ResizeEventHook
     {

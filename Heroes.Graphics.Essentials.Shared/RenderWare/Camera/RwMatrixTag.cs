@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace Heroes.Graphics.Essentials.Shared.RenderWare.Camera
+namespace Heroes.Graphics.Essentials.Definitions.RenderWare.Camera
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct RwMatrixTag

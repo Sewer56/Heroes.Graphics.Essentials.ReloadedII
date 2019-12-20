@@ -1,12 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using Heroes.Graphics.Essentials.Shared;
-using Heroes.Graphics.Essentials.Shared.Heroes;
-using Heroes.Graphics.Essentials.Shared.Math;
-using Reloaded.Memory.Sources;
-using Vanara.PInvoke;
+﻿using Heroes.Graphics.Essentials.Definitions;
+using Heroes.Graphics.Essentials.Definitions.Heroes;
 
-namespace Heroes.Graphics.Essentials.Heroes
+namespace Heroes.Graphics.Essentials.Heroes.Patches
 {
     public unsafe class ResolutionVariablePatcher
     {
