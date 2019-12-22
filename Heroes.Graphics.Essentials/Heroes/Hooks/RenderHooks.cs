@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Heroes.Graphics.Essentials.Definitions;
-using Heroes.Graphics.Essentials.Definitions.Heroes;
-using Heroes.Graphics.Essentials.Definitions.Heroes.Structures;
-using Heroes.Graphics.Essentials.Definitions.Math;
+using Heroes.SDK.API;
 using Reloaded.Hooks.Definitions;
-using Reloaded.Hooks.Definitions.X86;
-using Reloaded.Memory.Interop;
-using Reloaded.Memory.Kernel32;
 using Reloaded.Memory.Sources;
-using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
+using Heroes.Graphics.Essentials.Math;
+using Heroes.SDK.Classes;
+using Heroes.SDK.Definitions.Structures.Media.Video;
+using Heroes.SDK.Definitions.Structures.RenderWare.Arbitrary;
+using static Heroes.SDK.Classes.PseudoNativeClasses.RenderWareFunctions;
+using static Heroes.SDK.Classes.Uncategorized;
+using static Reloaded.Memory.Kernel32.Kernel32;
 
 namespace Heroes.Graphics.Essentials.Heroes.Hooks
 {
@@ -46,93 +45,67 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
         private readonly float* _dotsHeight = (float*)0x78A508;
         private readonly float* _dotsWidth = (float*)0x78A31C;
 
-        private RwEngineInstance* _engineInstance = (RwEngineInstance*)0x008E0A4C;
-
         // Replace constants used in calculating titlecard text position.
 
         /* Ours */
         private Memory _memory;
-        private IHook<sub_422AF0> _draw2PViewPortHook;
-        private IHook<sub_5263C0> _drawSpecialStageGaugeHook;
-        private IHook<sub_526280> _drawSpecialStageBarHook;
-        private IHook<sub_422A70> _draw2PStatusHook;
-        private IHook<_rwD3D8Im2DRenderPrimitive> _renderPrimitiveHook;
-        private IHook<sub_644450> _renderVideoHook;
+        private IHook<DrawViewPorts> _draw2PViewPortHook;
+        private IHook<DrawSpecialStageGauge> _drawSpecialStageGaugeHook;
+        private IHook<DrawSpecialStageBar> _drawSpecialStageBarHook;
+        private IHook<DrawTwoPlayerStatusBar> _draw2PStatusHook;
+        private IHook<Native_rwD3D8Im2DRenderPrimitive> _renderPrimitiveHook;
+        private IHook<RenderVideoFrame> _renderVideoHook;
         private IAsmHook _drawSpecialStageEmeraldIndicatorHook;
         private IHook<DrawFullVideoFrame> _drawFullVideoFrameHook;
         private IHook<DrawSmallFrame> _drawSmallVideoFrameHook;
-        private IHook<sub_442850> _drawTitlecardElementsHook;
-        private IHook<sub_526F60> _drawSpecialStageLinkHook;
-        private IHook<sub_44EAC0> _drawNowLoadingHook;
-        private IHook<sub_4545F0> _executeCreditsHook;
-        private IHook<sub_438A90> _drawResultScreenDotsHook;
+        private IHook<DrawTitlecardElements> _drawTitlecardElementsHook;
+        private IHook<Calls_DrawSpecialStageLinkText> _drawSpecialStageLinkHook;
+        private IHook<DrawNowLoading> _drawNowLoadingHook;
+        private IHook<TObjCreditsExecute> _executeCreditsHook;
+        private IHook<DrawResultScreenLevelupDotsAndSomeOtherElements> _drawResultScreenDotsHook;
         private IHook<DrawPowerupBox> _drawPowerupBoxHook;
-        private sub_651E20        _getVertexBufferSubmission;
+        private IHook<DrawSpecialStageEmeraldAndResultScreenGauge> _drawSpecialStageEmeraldHook;
 
         private Queue<bool> _shiftOrthographicProjection = new Queue<bool>();
         private bool _shiftProjectionFlag;
 
-        private Pinnable<IntPtr> _addressOfHook;
-        private IReverseWrapper<DrawEmeraldHook> _drawEmeraldHookReverseWrap;
-
-        public RenderHooks(float aspectRatioLimit, IReloadedHooks hooks)
+        public RenderHooks(float aspectRatioLimit, Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks hooks)
         {
             _memory = Memory.CurrentProcess;
             AspectConverter = new AspectConverter(aspectRatioLimit);
-            _draw2PViewPortHook = hooks.CreateHook<sub_422AF0>(Draw2PViewportHook, 0x422AF0).Activate();
-            _drawSpecialStageGaugeHook = hooks.CreateHook<sub_5263C0>(DrawSpecialStageGaugeImpl, 0x5263C0).Activate();
-            _drawSpecialStageBarHook = hooks.CreateHook<sub_526280>(DrawSpecialStageBarImpl, 0x526280, 0xD).Activate();
-            _draw2PStatusHook = hooks.CreateHook<sub_422A70>(Draw2pStatusImpl, 0x422A70).Activate();
-            _renderPrimitiveHook = hooks.CreateHook<_rwD3D8Im2DRenderPrimitive>(RenderPrimitiveImpl, 0x00662B00).Activate();
-            _renderVideoHook = hooks.CreateHook<sub_644450>(RenderVideoHookImpl, 0x644450).Activate();
-            _drawFullVideoFrameHook = hooks.CreateHook<DrawFullVideoFrame>(DrawFullVideoFrameHookImpl, 0x0042A100).Activate();
-            _drawSmallVideoFrameHook = hooks.CreateHook<DrawSmallFrame>(DrawSmallFrameImpl, 0x00429F80).Activate();
-            _drawTitlecardElementsHook = hooks.CreateHook<sub_442850>(DrawTitlecardElementsImpl, 0x442850).Activate();
-            _drawSpecialStageLinkHook = hooks.CreateHook<sub_526F60>(DrawSpecialStageLinkImpl, 0x526F60).Activate();
-            _getVertexBufferSubmission = hooks.CreateWrapper<sub_651E20>(0x651E20, out _);
-            _drawNowLoadingHook = hooks.CreateHook<sub_44EAC0>(DrawNowLoadingImpl, 0x44EAC0).Activate();
-            _executeCreditsHook = hooks.CreateHook<sub_4545F0>(ExecuteCredits, 0x4545F0).Activate();
-            _drawResultScreenDotsHook = hooks.CreateHook<sub_438A90>(DrawResultScreenDotsImpl, 0x438A90).Activate();
-            _drawPowerupBoxHook = hooks.CreateHook<DrawPowerupBox>(DrawPowerupBoxImpl, 0x479AB0).Activate();
+            
+            _draw2PViewPortHook = Fun_DrawViewPorts.Hook(Draw2PViewportHook).Activate();
+            _drawSpecialStageGaugeHook = Fun_DrawSpecialStageGauge.Hook(DrawSpecialStageGaugeImpl).Activate();
+            _drawSpecialStageBarHook = Fun_DrawSpecialStageBar.Hook(DrawSpecialStageBarImpl).Activate();
+            _draw2PStatusHook = Fun_DrawTwoPlayerStatusBar.Hook(Draw2pStatusImpl).Activate();
+            _renderPrimitiveHook = Fun_D3D8Im2DRenderPrimitive.Hook(RenderPrimitiveImpl).Activate();
+            _renderVideoHook = Fun_RenderVideoFrame.Hook(RenderVideoHookImpl).Activate();
+            _drawFullVideoFrameHook = Fun_DrawFullVideoFrame.Hook(DrawFullVideoFrameHookImpl).Activate();
+            _drawSmallVideoFrameHook = Fun_DrawSmallFrame.Hook(DrawSmallFrameImpl).Activate();
+            _drawTitlecardElementsHook = Fun_DrawTitlecardElements.Hook(DrawTitlecardElementsImpl).Activate();
+            _drawSpecialStageLinkHook = Fun_DrawSpecialStageLinkText.Hook(DrawSpecialStageLinkImpl).Activate();
+            _drawNowLoadingHook = Fun_DrawNowLoading.Hook(DrawNowLoadingImpl).Activate();
+            _executeCreditsHook = Fun_TObjCreditsExecute.Hook(ExecuteCredits).Activate();
+            _drawResultScreenDotsHook = Fun_DrawResultScreenLevelupDotsAndSomeOtherElements.Hook(DrawResultScreenDotsImpl).Activate();
+            _drawPowerupBoxHook = Fun_DrawPowerupBox.Hook(DrawPowerupBoxImpl).Activate();
+            _drawSpecialStageEmeraldHook = Fun_DrawSpecialStageEmeraldAndResultScreenGauge.Hook(DrawSpecialStageEmeraldImpl).Activate();
 
-            _drawEmeraldHookReverseWrap = hooks.CreateReverseWrapper<DrawEmeraldHook>(DrawSpecialStageEmeraldImpl);
-            _addressOfHook = new Pinnable<IntPtr>(_drawEmeraldHookReverseWrap.WrapperPointer);
-            _drawSpecialStageEmeraldIndicatorHook = hooks.CreateAsmHook(new[] {
-                "use32",    // Offset to first param (after execution of code)
-                "push eax", // + 8
-                "push esi", // + 12
-                "push ecx", // + 16
-                "push edx", // + 20
-
-                /* Push address of stack parameters up stack. */
-                "lea edx, [esp + 32]",
-                "lea ecx, [esp + 28]",
-                "lea ebx, [esp + 24]",
-                "lea eax, [esp + 20]",
-                "push edx",
-                "push ecx",
-                "push ebx",
-                "push eax",
-
-                $"call dword [0x{(long)_addressOfHook.Pointer:X}]",
-                "add esp, 16",
-
-                "pop edx",
-                "pop ecx",
-                "pop esi",
-                "pop eax"
-            }, 0x458920).Activate();
+            // Change permissions for game code regions.
+            _memory.ChangePermission((IntPtr) _descriptionX, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _descriptionY, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _descriptionWidth, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _descriptionHeight, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _pickupBoxSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsVertSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsHorzSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsHeight, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr) _dotsWidth, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
 
 
-            _memory.ChangePermission((IntPtr) _descriptionX, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _descriptionY, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _descriptionWidth, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _descriptionHeight, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _pickupBoxSeparation, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _dotsVertSeparation, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _dotsHorzSeparation, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _dotsHeight, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-            _memory.ChangePermission((IntPtr) _dotsWidth, sizeof(void*), Kernel32.MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr)_dotsVertSeparation, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr)_dotsHorzSeparation, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr)_dotsHeight, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+            _memory.ChangePermission((IntPtr)_dotsWidth, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
         }
 
         public void SubscribeToResizeEventHook(ResizeEventHook hook)
@@ -204,7 +177,7 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
             return _drawFullVideoFrameHook.OriginalFunction(ebx, x, y, width, height, a5, a6, a7);
         }
 
-        private int RenderVideoHookImpl(VideoRenderThing* a1, int a2)
+        private int RenderVideoHookImpl(VideoRenderProperties* a1, int a2)
         {
             // A1: 00AA4934 (Constant)
             return ExecuteWithScaleResolution(() => _renderVideoHook.OriginalFunction(a1, a2));
@@ -220,12 +193,10 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
 
             if (shift || _shiftProjectionFlag)
             {
-                VertexBufferSubmissionPtr* vertexBufferPtr = *(VertexBufferSubmissionPtr**)0xAA5048;
-                VertexBufferSubmissionThing* vertexBufferSubmissionThing;
-                if (*(int*)vertexBufferPtr != 0)
-                    vertexBufferSubmissionThing = (*vertexBufferPtr).SubmissionThing;
-                else
-                    vertexBufferSubmissionThing = _getVertexBufferSubmission();
+                var vertexBufferPtr = *(VertexBufferSubmission**) 0xAA5048;
+                var vertexBufferSubmissionThing = vertexBufferPtr->SubmissionThing != (void*) 0
+                                                ? (*vertexBufferPtr).SubmissionThing
+                                                : (VertexBufferSubmissionDetails*) Fun_GetVertexBufferSubmission.GetWrapper()();
 
                 // Convert.ToInt32 performs rounding!
                 var extraLeftBorder = (short)(Convert.ToInt32(AspectConverter.GetBorderWidthX(ActualAspectRatio, CurrentHeight) / 2));
@@ -255,8 +226,6 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
                 AspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio));
         }
 
-
-
         private int DrawSpecialStageBarImpl(int preserveEax, float x, float y, float width, float height)
         {
             return _drawSpecialStageBarHook.OriginalFunction(preserveEax,
@@ -282,80 +251,85 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
             return _draw2PViewPortHook.OriginalFunction();
         }
 
-        private void DrawSpecialStageEmeraldImpl(float* x, float* y, float* width, float* height)
+        private void* DrawSpecialStageEmeraldImpl(void* preserveEax, void* preserveEsi, float x, float y, float width, float height)
         {
-            *x = AspectConverter.ProjectFromOldToNewCanvasX(*x, RelativeAspectRatio, ActualAspectRatio);
-            *y = AspectConverter.ProjectFromOldToNewCanvasY(*y, RelativeAspectRatio, ActualAspectRatio);
-            *width = AspectConverter.ScaleByRelativeAspectX(*width, RelativeAspectRatio, ActualAspectRatio);
-            *height = AspectConverter.ScaleByRelativeAspectY(*height, RelativeAspectRatio, ActualAspectRatio);
+            x = AspectConverter.ProjectFromOldToNewCanvasX(x, RelativeAspectRatio, ActualAspectRatio);
+            y = AspectConverter.ProjectFromOldToNewCanvasY(y, RelativeAspectRatio, ActualAspectRatio);
+            width = AspectConverter.ScaleByRelativeAspectX(width, RelativeAspectRatio, ActualAspectRatio);
+            height = AspectConverter.ScaleByRelativeAspectY(height, RelativeAspectRatio, ActualAspectRatio);
+            return _drawSpecialStageEmeraldHook.OriginalFunction(preserveEax, preserveEsi, x, y, width, height);
         }
 
         private void PatchViewport()
         {
             // Patch camera values for 2P Mode
-            var screenViewPort = _engineInstance->Engine->ScreenRender->ScreenViewport;
-            var allViewPorts   = _engineInstance->Engine->ScreenRender->AllViewPorts;
-
-            int halfHeight = CurrentHeight / 2;
-            int halfWidth  = CurrentWidth / 2;
-
-            screenViewPort->Height = CurrentHeight;
-            screenViewPort->Width  = CurrentWidth;
-
-            int cameraCount = *(int*)0xA60BE4;
-
-            // Split camera horizontally.
-            if (cameraCount <= 2)
+            ref var engineInstance = ref State.EngineInstance.TryDereference(out bool success);
+            if (success)
             {
-                // 2P, Horizontal Splitscreen
-                allViewPorts->P1Viewport.Height = CurrentHeight;
-                allViewPorts->P1Viewport.Width  = halfWidth;
-                allViewPorts->P1Viewport.OffsetX = 0;
-                allViewPorts->P1Viewport.OffsetY = 0;
+                var screenViewPort = engineInstance.Graphics->ScreenViewport;
+                var allViewPorts = engineInstance.Graphics->AllViewPorts;
 
-                allViewPorts->P2Viewport.Height = CurrentHeight;
-                allViewPorts->P2Viewport.Width = halfWidth;
-                allViewPorts->P2Viewport.OffsetX = (short)halfWidth;
-                allViewPorts->P2Viewport.OffsetY = 0;
-            }
-            else 
-            {
-                // 4P: Four quadrants
-                allViewPorts->P1Viewport.Height = halfHeight;
-                allViewPorts->P1Viewport.Width = halfWidth;
-                allViewPorts->P1Viewport.OffsetX = 0;
-                allViewPorts->P1Viewport.OffsetY = 0;
+                int halfHeight = CurrentHeight / 2;
+                int halfWidth = CurrentWidth / 2;
 
-                allViewPorts->P2Viewport.Height = halfHeight;
-                allViewPorts->P2Viewport.Width = halfWidth;
-                allViewPorts->P2Viewport.OffsetX = (short)halfWidth;
-                allViewPorts->P2Viewport.OffsetY = 0;
+                screenViewPort->Height = CurrentHeight;
+                screenViewPort->Width = CurrentWidth;
 
-                allViewPorts->P3Viewport.Height = halfHeight;
-                allViewPorts->P3Viewport.Width = halfWidth;
-                allViewPorts->P3Viewport.OffsetX = 0;
-                allViewPorts->P3Viewport.OffsetY = (short)halfHeight;
+                int cameraCount = *(int*)0xA60BE4;
 
-                allViewPorts->P4Viewport.Height = halfHeight;
-                allViewPorts->P4Viewport.Width = halfWidth;
-                allViewPorts->P4Viewport.OffsetX = (short)(halfWidth);
-                allViewPorts->P4Viewport.OffsetY = (short)(halfHeight);
+                // Split camera horizontally.
+                if (cameraCount <= 2)
+                {
+                    // 2P, Horizontal Splitscreen
+                    allViewPorts->P1Viewport.Height = CurrentHeight;
+                    allViewPorts->P1Viewport.Width = halfWidth;
+                    allViewPorts->P1Viewport.OffsetX = 0;
+                    allViewPorts->P1Viewport.OffsetY = 0;
+
+                    allViewPorts->P2Viewport.Height = CurrentHeight;
+                    allViewPorts->P2Viewport.Width = halfWidth;
+                    allViewPorts->P2Viewport.OffsetX = (short)halfWidth;
+                    allViewPorts->P2Viewport.OffsetY = 0;
+                }
+                else
+                {
+                    // 4P: Four quadrants
+                    allViewPorts->P1Viewport.Height = halfHeight;
+                    allViewPorts->P1Viewport.Width = halfWidth;
+                    allViewPorts->P1Viewport.OffsetX = 0;
+                    allViewPorts->P1Viewport.OffsetY = 0;
+
+                    allViewPorts->P2Viewport.Height = halfHeight;
+                    allViewPorts->P2Viewport.Width = halfWidth;
+                    allViewPorts->P2Viewport.OffsetX = (short)halfWidth;
+                    allViewPorts->P2Viewport.OffsetY = 0;
+
+                    allViewPorts->P3Viewport.Height = halfHeight;
+                    allViewPorts->P3Viewport.Width = halfWidth;
+                    allViewPorts->P3Viewport.OffsetX = 0;
+                    allViewPorts->P3Viewport.OffsetY = (short)halfHeight;
+
+                    allViewPorts->P4Viewport.Height = halfHeight;
+                    allViewPorts->P4Viewport.Width = halfWidth;
+                    allViewPorts->P4Viewport.OffsetX = (short)(halfWidth);
+                    allViewPorts->P4Viewport.OffsetY = (short)(halfHeight);
+                }
             }
         }
 
         private void* DrawResultScreenDotsImpl()
         {
-            _memory.SafeWrite((IntPtr)_dotsVertSeparation, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
-            _memory.SafeWrite((IntPtr)_dotsHorzSeparation, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
-            _memory.SafeWrite((IntPtr)_dotsHeight, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
-            _memory.SafeWrite((IntPtr)_dotsWidth, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
+            _memory.Write((IntPtr)_dotsVertSeparation, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
+            _memory.Write((IntPtr)_dotsHorzSeparation, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
+            _memory.Write((IntPtr)_dotsHeight, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
+            _memory.Write((IntPtr)_dotsWidth, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
 
             var returnValue = _drawResultScreenDotsHook.OriginalFunction();
 
-            _memory.SafeWrite((IntPtr)_dotsVertSeparation, DefaultResultScreenDotsVerticalSeparation);
-            _memory.SafeWrite((IntPtr)_dotsHorzSeparation, DefaultResultScreenDotsHorizontalSeparation);
-            _memory.SafeWrite((IntPtr)_dotsHeight, DefaultResultScreenDotsHeight);
-            _memory.SafeWrite((IntPtr)_dotsWidth, DefaultResultScreenDotsWidth);
+            _memory.Write((IntPtr)_dotsVertSeparation, DefaultResultScreenDotsVerticalSeparation);
+            _memory.Write((IntPtr)_dotsHorzSeparation, DefaultResultScreenDotsHorizontalSeparation);
+            _memory.Write((IntPtr)_dotsHeight, DefaultResultScreenDotsHeight);
+            _memory.Write((IntPtr)_dotsWidth, DefaultResultScreenDotsWidth);
 
             return returnValue;
         }
@@ -389,75 +363,5 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
 
             return retVal;
         }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(FunctionAttribute.Register.eax, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Caller)]
-        public delegate int sub_5263C0(int preserveEax, float x, float y, float width, float height, int a5, int a6, int a7, float a8, float a9);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(FunctionAttribute.Register.eax, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Caller)]
-        public delegate int sub_526280(int preserveEax, float x, float y, float width, float height);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(FunctionAttribute.Register.eax, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Caller)]
-        public delegate int sub_422A70(int preserveEax, float x, float y, float width, float height);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.Cdecl)]
-        public delegate bool _rwD3D8Im2DRenderPrimitive(int a1, char* a2, int a3);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.eax }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
-        public delegate int sub_644450(VideoRenderThing* a1, int a2);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.ebx }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Caller)]
-        public delegate int DrawFullVideoFrame(int ebx, float x, float y, float width, float height, int a5, float a6, float a7); // sub_42A100
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.ebx }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Caller)]
-        public delegate int DrawSmallFrame(int ebx, float x, float y, float width, float height, int a5);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.eax }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
-        public delegate int sub_526F60(int preserveEax, int a1, float a2, float a3, float a4, float a5, int a6, int a7,
-            int a8, int a9, int a10);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.eax, FunctionAttribute.Register.ecx, FunctionAttribute.Register.ebx }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Caller)]
-        public delegate int* sub_44EAC0(int a1, char* a2, float* a3);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.Cdecl)]
-        public delegate VertexBufferSubmissionThing* sub_651E20(); // Gets vertex buffer submission ptr
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.Cdecl)]
-        public delegate int sub_422AF0();
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.MicrosoftThiscall)]
-        public delegate int sub_442850(int thisPtr);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.MicrosoftThiscall)]
-        public delegate int sub_4545F0(int thisPtr);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.eax, FunctionAttribute.Register.esi }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
-        public delegate void* sub_458920(void* preserveEax, void* preserveEsi, float x, float y, float width, float height);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.Cdecl)]
-        public delegate void* sub_438A90();
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(new[] { FunctionAttribute.Register.eax }, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
-        public delegate void* DrawPowerupBox(void* preseveEax, float probablyX, float probablyY, float size); // 479AB0
-
-        /* Custom Delegates */
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.Cdecl)]
-        public delegate void DrawEmeraldHook(float* x, float* y, float* width, float* height);
     }
 }

@@ -1,8 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Heroes.Graphics.Essentials.Definitions.Heroes;
-using Reloaded.Hooks.Definitions;
-using Reloaded.Hooks.Definitions.X86;
-using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
+﻿using Reloaded.Hooks.Definitions;
+using static Heroes.SDK.Classes.PseudoNativeClasses.PcPortFunctions;
 
 namespace Heroes.Graphics.Essentials.Heroes.Hooks
 {
@@ -11,13 +8,13 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
     /// </summary>
     public unsafe class DefaultSettingsHook
     {
-        public IHook<ReadConfigfromINI> ReadConfigFromIniHook;
+        public IHook<Native_ReadConfigfromINI> ReadConfigFromIniHook;
         public DefaultSettings DefaultSettings { get; private set; }
 
-        public DefaultSettingsHook(DefaultSettings defaultSettings, IReloadedHooks hooks)
+        public DefaultSettingsHook(DefaultSettings defaultSettings)
         {
             DefaultSettings = defaultSettings;
-            ReadConfigFromIniHook = hooks.CreateHook<ReadConfigfromINI>(ReadConfigFromIni, 0x00629CE0).Activate();
+            ReadConfigFromIniHook = Fun_ReadConfigfromINI.Hook(ReadConfigFromIni).Activate();
         }
 
         private int ReadConfigFromIni(char* configPath)
@@ -26,12 +23,5 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
             DefaultSettings.Apply();
             return result;
         }
-
-        /// <summary>
-        /// Reads the default game configuration from an INI file and applies it to game.
-        /// </summary>
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        [Function(FunctionAttribute.Register.eax, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
-        public delegate int ReadConfigfromINI(char* configPath);
     }
 }

@@ -17,6 +17,7 @@ namespace Heroes.Graphics.Essentials
         {
             _modLoader = (IModLoader)loader;
             _modLoader.GetController<IReloadedHooks>().TryGetTarget(out var reloadedHooks);
+            SDK.SDK.Init(reloadedHooks);
 
             /* Your mod code starts here. */
             _graphicsEssentials = new GraphicsEssentials(_modLoader.GetDirectoryForModId(MyModId), reloadedHooks);

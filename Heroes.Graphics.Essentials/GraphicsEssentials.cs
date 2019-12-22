@@ -1,12 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Heroes.Graphics.Essentials.Config;
 using Heroes.Graphics.Essentials.Configuration;
-using Heroes.Graphics.Essentials.Definitions;
-using Heroes.Graphics.Essentials.Heroes;
 using Heroes.Graphics.Essentials.Heroes.Hooks;
 using Heroes.Graphics.Essentials.Heroes.Patches;
 using Reloaded.Hooks.ReloadedII.Interfaces;
-using Reloaded.Mod.Interfaces;
 using Vanara.PInvoke;
 
 namespace Heroes.Graphics.Essentials
@@ -29,8 +25,7 @@ namespace Heroes.Graphics.Essentials
         {
             _configurator = new Configurator(modFolder);
             _config = _configurator.GetConfiguration<Config.Config>(0);
-
-            _defaultSettingsHook = new DefaultSettingsHook(_config.DefaultSettings, hooks);
+            _defaultSettingsHook = new DefaultSettingsHook(_config.DefaultSettings);
 
             NativeResolutionPatcher.Patch(_config.Width, _config.Height);
             WindowStylePatcher.Patch(_config.BorderlessWindowed, _config.ResizableWindowed);
@@ -42,10 +37,10 @@ namespace Heroes.Graphics.Essentials
                 DisableFrameskipPatch.Patch();
             
             if (_config.HighAspectRatioCrashFix)
-                _crashFixHook = new StageLoadCrashFixHook(hooks);
+                _crashFixHook = new StageLoadCrashFixHook();
 
-            _clippingPlanesHook = new ClippingPlanesHook(_config.AspectRatioLimit, hooks);
-            _aspectRatioHook    = new AspectRatioHook(_config.AspectRatioLimit, hooks);
+            _clippingPlanesHook = new ClippingPlanesHook(_config.AspectRatioLimit);
+            _aspectRatioHook    = new AspectRatioHook(_config.AspectRatioLimit);
 
             _resolutionVariablePatcher  = new ResolutionVariablePatcher();
             _renderHooks                = new RenderHooks(_config.AspectRatioLimit, hooks);
@@ -60,10 +55,10 @@ namespace Heroes.Graphics.Essentials
             _resolutionVariablePatcher.SubscribeToResizeEventHook(_resizeEventHook);
             _renderHooks.SubscribeToResizeEventHook(_resizeEventHook);
 
-            while (User32_Gdi.GetMessage(out var msg, HWND.NULL, 0, 0))
+            while (User32.GetMessage(out var msg, HWND.NULL, 0, 0))
             {
-                User32_Gdi.TranslateMessage(msg);
-                User32_Gdi.DispatchMessage(msg);
+                User32.TranslateMessage(msg);
+                User32.DispatchMessage(msg);
             }
         }
     }

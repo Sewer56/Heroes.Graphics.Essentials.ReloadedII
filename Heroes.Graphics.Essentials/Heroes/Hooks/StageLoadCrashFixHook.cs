@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using Heroes.Graphics.Essentials.Definitions.Heroes;
-using Heroes.Graphics.Essentials.Definitions.Math;
+using Heroes.Graphics.Essentials.Math;
+using Heroes.SDK.API;
+using Heroes.SDK.Classes.NativeClasses;
 using Reloaded.Hooks.Definitions;
-using Reloaded.Hooks.Definitions.X86;
 using Vanara.PInvoke;
-using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
+using static Heroes.SDK.Classes.NativeClasses.TObjCamera;
 
 namespace Heroes.Graphics.Essentials.Heroes.Hooks
 {
-    public class StageLoadCrashFixHook
+    public unsafe class StageLoadCrashFixHook
     {
-        private IHook<TObjCamera_Init> _cameraInitHook;
+        private IHook<Native_Init> _cameraInitHook;
 
-        public StageLoadCrashFixHook(IReloadedHooks hooks)
+        public StageLoadCrashFixHook()
         {
-            _cameraInitHook = hooks.CreateHook<TObjCamera_Init>(TObjCameraInit, 0x0061D3B0).Activate();
+            _cameraInitHook = Fun_Init.Hook(TObjCameraInit).Activate();
         }
 
-        private int TObjCameraInit(IntPtr thisPointer, int camLimit)
+        private int TObjCameraInit(TObjCamera* thisPointer, int camLimit)
         {
             // Backup old resolution.
-            var windowHandle = Variables.WindowHandle;
-            if (! windowHandle.IsNull)
+            var windowHandle = Window.WindowHandle;
+            if (windowHandle != IntPtr.Zero)
             {
-                User32_Gdi.GetWindowRect(windowHandle, out var windowRect);
+                User32.GetWindowRect(windowHandle, out var windowRect);
                 int resolutionXBackup = windowRect.Width;
                 int resolutionYBackup = windowRect.Height;
 
@@ -33,21 +32,17 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
                 AspectConverter.WidthToResolution(greaterResolution, AspectConverter.OriginalGameAspect, out var resolution);
 
                 // Temp resize window and execute.
-                User32_Gdi.MoveWindow(windowHandle, windowRect.left, windowRect.top, resolution.Width, resolution.Height, false);
+                User32.MoveWindow(windowHandle, windowRect.left, windowRect.top, resolution.Width, resolution.Height, false);
 
                 int result = _cameraInitHook.OriginalFunction(thisPointer, camLimit);
 
                 // Restore window.
-                User32_Gdi.MoveWindow(windowHandle, windowRect.left, windowRect.top, resolutionXBackup, resolutionYBackup, false);
+                User32.MoveWindow(windowHandle, windowRect.left, windowRect.top, resolutionXBackup, resolutionYBackup, false);
 
                 return result;
             }
             
             return _cameraInitHook.OriginalFunction(thisPointer, camLimit);
         }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        [Function(FunctionAttribute.Register.eax, FunctionAttribute.Register.eax, FunctionAttribute.StackCleanup.Callee)]
-        private delegate int TObjCamera_Init(IntPtr thisPointer, int camLimit);
     }
 }

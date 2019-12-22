@@ -5,6 +5,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,9 @@
   <ItemGroup>
     <PackageReference Include="Reloaded.Messaging.Serializer.SystemTextJson" Version="1.0.1" />
     <PackageReference Include="Reloaded.Mod.Interfaces" Version="1.6.0" />
+    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.4.0" />
     <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Heroes.Graphics.Essentials.Shared\Heroes.Graphics.Essentials.Definitions.csproj" />
+    <ProjectReference Include="..\Submodules\Heroes.SDK\Heroes.SDK.Library\Heroes.SDK.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace Heroes.Graphics.Essentials.Definitions.Math.Structs
+﻿namespace Heroes.Graphics.Essentials.Math.Structs
 {
     public struct Resolution
     {

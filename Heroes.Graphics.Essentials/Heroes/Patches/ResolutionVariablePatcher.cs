@@ -1,5 +1,4 @@
-﻿using Heroes.Graphics.Essentials.Definitions;
-using Heroes.Graphics.Essentials.Definitions.Heroes;
+﻿using Heroes.Graphics.Essentials.Heroes.Hooks;
 
 namespace Heroes.Graphics.Essentials.Heroes.Patches
 {

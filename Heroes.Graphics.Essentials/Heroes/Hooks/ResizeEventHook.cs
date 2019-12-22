@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using Heroes.Graphics.Essentials.Definitions.Heroes;
-using Heroes.Graphics.Essentials.Definitions.Math;
+using Heroes.Graphics.Essentials.Math;
+using Heroes.SDK.API;
 using Vanara.PInvoke;
 
-namespace Heroes.Graphics.Essentials.Definitions
+namespace Heroes.Graphics.Essentials.Heroes.Hooks
 {
     public class ResizeEventHook
     {
@@ -18,7 +18,7 @@ namespace Heroes.Graphics.Essentials.Definitions
         public float RelativeAspectRatio;
 
         // Ours
-        private User32.WINEVENTPROC _onLocationChangeEventHandler;
+        private User32.WinEventProc _onLocationChangeEventHandler;
 
         public ResizeEventHook()
         {
@@ -36,7 +36,7 @@ namespace Heroes.Graphics.Essentials.Definitions
             {
                 // Two things performed here.
                 RECT rect = new RECT();
-                User32_Gdi.GetClientRect(Variables.WindowHandle, ref rect);
+                User32.GetClientRect(Window.WindowHandle, ref rect);
                 CurrentHeight = rect.Height;
                 CurrentWidth = rect.Width;
                 ActualAspectRatio = CurrentWidth / (float)CurrentHeight;
