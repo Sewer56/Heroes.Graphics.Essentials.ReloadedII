@@ -13,6 +13,7 @@ namespace Heroes.Graphics.Essentials
         private static IModLoader _modLoader;
         private GraphicsEssentials _graphicsEssentials;
 
+        public static void Main() { }
         public void Start(IModLoaderV1 loader)
         {
             _modLoader = (IModLoader)loader;

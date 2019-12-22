@@ -5,6 +5,10 @@
   "ModVersion": "1.1.0",
   "ModDescription": "Provides a set of graphical enhancements such as a custom-made widescreen hack supporting real-time window resizes.",
   "ModDll": "Heroes.Graphics.Essentials.dll",
+  "ModR2RManagedDll32": "x86/Heroes.Graphics.Essentials.dll",
+  "ModR2RManagedDll64": "x64/Heroes.Graphics.Essentials.dll",
+  "ModNativeDll32": "",
+  "ModNativeDll64": "",
   "ModIcon": "Preview.png",
   "ModDependencies": [ "reloaded.sharedlib.hooks" ],
   "SupportedAppId": [ "Tsonic_win.EXE", "tsonic_win.exe" ]
