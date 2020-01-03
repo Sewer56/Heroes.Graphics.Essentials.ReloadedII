@@ -42,6 +42,10 @@ namespace Heroes.Graphics.Essentials.Config
         [Description("Stops the game from slowing down when focus is lost.")]
         public bool DontSlowdownOnFocusLost { get; set; } = true;
 
+        [DisplayName("Center Window to Screen")]
+        [Description("Moves the window to the center of the screen.")]
+        public bool CenterWindow { get; set; } = true;
+
         [DisplayName("Default Settings")]
         [Description("The regular settings from the Sonic Heroes launcher.")]
         public DefaultSettings DefaultSettings  { get; set; } = new DefaultSettings();

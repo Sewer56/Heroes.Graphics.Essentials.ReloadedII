@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Heroes.Graphics.Essentials.Configuration;
 using Heroes.Graphics.Essentials.Heroes.Hooks;
 using Heroes.Graphics.Essentials.Heroes.Patches;
+using Heroes.SDK.API;
 using Reloaded.Hooks.ReloadedII.Interfaces;
+using Reloaded.Memory;
 using Vanara.PInvoke;
 
 namespace Heroes.Graphics.Essentials
@@ -49,6 +52,27 @@ namespace Heroes.Graphics.Essentials
             _renderHooks                = new RenderHooks(_config.AspectRatioLimit, hooks);
 
             Task.Run(MessagePump);
+            Task.Run(async () =>
+            {
+                while (Window.WindowHandle == IntPtr.Zero)
+                    await Task.Delay(32);
+
+                int left   = 0;
+                int top    = 0;
+
+                if (_config.CenterWindow)
+                {
+                    var monitor = User32.MonitorFromWindow(Window.WindowHandle, User32.MonitorFlags.MONITOR_DEFAULTTONEAREST);
+                    var info = new User32.MONITORINFO { cbSize = (uint) Struct.GetSize<User32.MONITORINFO>() };
+                    if (User32.GetMonitorInfo(monitor, ref info))
+                    {
+                        left += (info.rcMonitor.Width - _config.Width) / 2;
+                        top += (info.rcMonitor.Height - _config.Height) / 2;
+                    }
+                }
+
+                User32.MoveWindow(Window.WindowHandle, left, top, _config.Width, _config.Height, false);
+            });
         }
 
         /* Patching hardcoded values in ResolutionVariablePatcher via events. */
