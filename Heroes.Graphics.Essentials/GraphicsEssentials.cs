@@ -39,6 +39,9 @@ namespace Heroes.Graphics.Essentials
             if (_config.HighAspectRatioCrashFix)
                 _crashFixHook = new StageLoadCrashFixHook();
 
+            if (_config.DontSlowdownOnFocusLost)
+                DontSlowdownOnFocusLoss.Patch();
+
             _clippingPlanesHook = new ClippingPlanesHook(_config.AspectRatioLimit);
             _aspectRatioHook    = new AspectRatioHook(_config.AspectRatioLimit);
 

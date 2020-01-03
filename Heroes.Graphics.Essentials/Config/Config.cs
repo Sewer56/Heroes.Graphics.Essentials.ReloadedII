@@ -38,6 +38,10 @@ namespace Heroes.Graphics.Essentials.Config
         [Description("A hack that skips waiting in titlecards, causing levels to load instantly.")]
         public bool StupidlyFastLoadTimes       { get; set; } = true;
 
+        [DisplayName("Do Not Slowdown on Focus Loss")]
+        [Description("Stops the game from slowing down when focus is lost.")]
+        public bool DontSlowdownOnFocusLost { get; set; } = true;
+
         [DisplayName("Default Settings")]
         [Description("The regular settings from the Sonic Heroes launcher.")]
         public DefaultSettings DefaultSettings  { get; set; } = new DefaultSettings();
