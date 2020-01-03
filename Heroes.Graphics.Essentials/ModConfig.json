@@ -2,7 +2,7 @@
   "ModId": "sonicheroes.essentials.graphics",
   "ModName": "SH Essentials: Graphics",
   "ModAuthor": "Sewer56",
-  "ModVersion": "1.1.1",
+  "ModVersion": "1.1.2",
   "ModDescription": "Provides a set of graphical enhancements such as a custom-made widescreen hack supporting real-time window resizes.",
   "ModDll": "Heroes.Graphics.Essentials.dll",
   "ModR2RManagedDll32": "x86/Heroes.Graphics.Essentials.dll",
