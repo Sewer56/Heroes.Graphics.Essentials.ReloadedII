@@ -27,16 +27,9 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
                 int resolutionXBackup = windowRect.Width;
                 int resolutionYBackup = windowRect.Height;
 
-                // Get new resolution
-                int greaterResolution = resolutionXBackup > resolutionYBackup ? resolutionXBackup : resolutionYBackup;
-                AspectConverter.WidthToResolution(greaterResolution, AspectConverter.OriginalGameAspect, out var resolution);
-
-                // Temp resize window and execute.
-                User32.MoveWindow(windowHandle, windowRect.left, windowRect.top, resolution.Width, resolution.Height, false);
-
+                // Temp resize window, execute and restore
+                User32.MoveWindow(windowHandle, windowRect.left, windowRect.top, (int) AspectConverter.GameCanvasWidth, (int) AspectConverter.GameCanvasHeight, false);
                 int result = _cameraInitHook.OriginalFunction(thisPointer, camLimit);
-
-                // Restore window.
                 User32.MoveWindow(windowHandle, windowRect.left, windowRect.top, resolutionXBackup, resolutionYBackup, false);
 
                 return result;
