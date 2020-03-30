@@ -16,7 +16,7 @@ namespace Heroes.Graphics.Essentials
         private Configurator _configurator;
 
         private DefaultSettingsHook _defaultSettingsHook;
-        private StageLoadCrashFixHook _crashFixHook;
+        private StageLoadCrashPatch _crashPatch;
         private ClippingPlanesHook _clippingPlanesHook;
         private AspectRatioHook _aspectRatioHook;
 
@@ -40,7 +40,7 @@ namespace Heroes.Graphics.Essentials
                 DisableFrameskipPatch.Patch();
             
             if (_config.HighAspectRatioCrashFix)
-                _crashFixHook = new StageLoadCrashFixHook();
+                _crashPatch = new StageLoadCrashPatch();
 
             if (_config.DontSlowdownOnFocusLost)
                 DontSlowdownOnFocusLoss.Patch();
