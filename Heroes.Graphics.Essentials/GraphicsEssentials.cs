@@ -72,6 +72,9 @@ namespace Heroes.Graphics.Essentials
                 }
 
                 User32.MoveWindow(Window.WindowHandle, left, top, _config.Width, _config.Height, false);
+
+                await Task.Delay(32);
+                _resizeEventHook.ForceSizeChangeCheck();
             }).ConfigureAwait(false);
         }
 

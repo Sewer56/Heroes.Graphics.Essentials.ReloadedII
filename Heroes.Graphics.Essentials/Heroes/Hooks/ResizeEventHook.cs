@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Heroes.Graphics.Essentials.Math;
@@ -38,6 +38,11 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
                 }).ConfigureAwait(false);
             }
         }
+
+        /// <summary>
+        /// Forces a size change check.
+        /// </summary>
+        public void ForceSizeChangeCheck() => HandlePossibleSizeChange();
 
         /* Patching Resolution Changes Section */
         private void OnLocationChangeImpl(User32.HWINEVENTHOOK hWinEventHook, uint winEvent, HWND hWnd, int idObject, int idChild, uint idEventThread, uint dwmsEventTime)
