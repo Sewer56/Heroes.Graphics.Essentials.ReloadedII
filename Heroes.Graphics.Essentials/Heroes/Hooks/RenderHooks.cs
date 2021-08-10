@@ -110,7 +110,7 @@ namespace Heroes.Graphics.Essentials.Heroes.Hooks
 
         public void SubscribeToResizeEventHook(ResizeEventHook hook)
         {
-            hook.Resized += sender =>
+            hook.Resized += (in ResizeEventHook.ResizeEventHookData sender) =>
             {
                 ActualAspectRatio = sender.ActualAspectRatio;
                 RelativeAspectRatio = sender.RelativeAspectRatio;

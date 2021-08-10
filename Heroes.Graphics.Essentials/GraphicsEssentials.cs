@@ -72,7 +72,7 @@ namespace Heroes.Graphics.Essentials
                 }
 
                 User32.MoveWindow(Window.WindowHandle, left, top, _config.Width, _config.Height, false);
-            });
+            }).ConfigureAwait(false);
         }
 
         /* Patching hardcoded values in ResolutionVariablePatcher via events. */
