@@ -1,15 +1,49 @@
-{
+﻿{
   "ModId": "sonicheroes.essentials.graphics",
   "ModName": "SH Essentials: Graphics",
   "ModAuthor": "Sewer56",
   "ModVersion": "1.2.3",
   "ModDescription": "Provides a set of graphical enhancements such as a custom-made widescreen hack supporting real-time window resizes.",
   "ModDll": "Heroes.Graphics.Essentials.dll",
-  "ModR2RManagedDll32": "x86/Heroes.Graphics.Essentials.dll",
-  "ModR2RManagedDll64": "x64/Heroes.Graphics.Essentials.dll",
+  "ModIcon": "Preview.png",
+  "ModR2RManagedDll32": "",
+  "ModR2RManagedDll64": "",
   "ModNativeDll32": "",
   "ModNativeDll64": "",
-  "ModIcon": "Preview.png",
-  "ModDependencies": [ "reloaded.sharedlib.hooks" ],
-  "SupportedAppId": [ "Tsonic_win.EXE", "tsonic_win.exe" ]
+  "IsLibrary": false,
+  "ReleaseMetadataFileName": "Sewer56.Update.ReleaseMetadata.json",
+  "PluginData": {
+    "GitHubDependencies": {
+      "IdToConfigMap": {
+        "reloaded.sharedlib.hooks": {
+          "Config": {
+            "UserName": "Reloaded.SharedLib.Hooks.ReloadedII",
+            "RepositoryName": "Sewer56",
+            "UseReleaseTag": true,
+            "AssetFileName": "reloaded.sharedlib.hooks.zip"
+          }
+        }
+      }
+    },
+    "GitHubRelease": {
+      "UserName": "Sewer56",
+      "RepositoryName": "Heroes.Graphics.Essentials.ReloadedII",
+      "UseReleaseTag": true,
+      "AssetFileName": "Mod.zip"
+    },
+    "NuGet": {
+      "AllowUpdateFromAnyRepository": false,
+      "DefaultRepositoryUrls": [
+        "http://packages.sewer56.moe:5000/v3/index.json"
+      ]
+    }
+  },
+  "IsUniversalMod": false,
+  "ModDependencies": [
+    "reloaded.sharedlib.hooks"
+  ],
+  "OptionalDependencies": [],
+  "SupportedAppId": [
+    "tsonic_win.exe"
+  ]
 }

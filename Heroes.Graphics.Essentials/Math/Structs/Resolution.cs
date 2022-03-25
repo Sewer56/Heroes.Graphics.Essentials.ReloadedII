@@ -1,8 +1,7 @@
-﻿namespace Heroes.Graphics.Essentials.Math.Structs
+﻿namespace Heroes.Graphics.Essentials.Math.Structs;
+
+public struct Resolution
 {
-    public struct Resolution
-    {
-        public int Width ;
-        public int Height;
-    }
+    public int Width;
+    public int Height;
 }

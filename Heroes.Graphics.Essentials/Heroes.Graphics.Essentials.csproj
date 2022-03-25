@@ -1,14 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon />
     <OutputType>WinExe</OutputType>
     <StartupObject />
+    <LangVersion>preview</LangVersion>
+    <OutputPath>$(RELOADEDIIMODS)\sonicheroes.essentials.graphics</OutputPath>
+    <RobustILLink>true</RobustILLink>
   </PropertyGroup>
+
+  <ItemGroup>
+    <RobustLinkRoots Include="Heroes.Graphics.Essentials" />
+    <RobustLinkAssemblies Include="Heroes.SDK" />
+    <RobustLinkAssemblies Include="Reloaded.Memory" />
+    <RobustLinkAssemblies Include="Vanara.PInvoke.User32" />
+    <RobustLinkAssemblies Include="Vanara.PInvoke.Shared" />
+    <RobustLinkAssemblies Include="Vanara.PInvoke.Kernel32" />
+    <RobustLinkAssemblies Include="Vanara.PInvoke.Gdi32" />
+    <RobustLinkAssemblies Include="Vanara.Core" />
+    <RobustLinkAssemblies Include="System.Drawing.Common" />
+    <RobustLinkAssemblies Include="Microsoft.Win32.SystemEvents" />
+  </ItemGroup>
+
+  <Import Project="Robust.Trimming.targets" />
 
   <ItemGroup>
     <None Remove="ModConfig.json" />
@@ -25,9 +43,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reloaded.Messaging.Serializer.SystemTextJson" Version="1.0.1" />
-    <PackageReference Include="Reloaded.Mod.Interfaces" Version="1.6.0" />
-    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.4.0" />
+    <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.1.0" />
+    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="3.1.6" />
   </ItemGroup>
 

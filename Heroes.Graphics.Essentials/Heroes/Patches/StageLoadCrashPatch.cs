@@ -1,13 +1,12 @@
 ﻿using System;
 using Reloaded.Memory.Sources;
 
-namespace Heroes.Graphics.Essentials.Heroes.Patches
+namespace Heroes.Graphics.Essentials.Heroes.Patches;
+
+public class StageLoadCrashPatch
 {
-    public unsafe class StageLoadCrashPatch
+    public StageLoadCrashPatch()
     {
-        public StageLoadCrashPatch()
-        {
-            Memory.CurrentProcess.SafeWrite((IntPtr)0x61D418, new byte[] {0x90, 0x90});
-        }
+        Memory.CurrentProcess.SafeWrite((IntPtr)0x61D418, new byte[] {0x90, 0x90});
     }
 }
