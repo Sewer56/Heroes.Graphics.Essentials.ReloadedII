@@ -5,5 +5,6 @@ Split-Path $MyInvocation.MyCommand.Path | Push-Location
 
 ./Publish.ps1 -ProjectPath "Heroes.Graphics.Essentials/Heroes.Graphics.Essentials.csproj" `
               -PackageName "Heroes.Graphics.Essentials" `
+			  -ReadmePath "README-Mod.md" `
 
 Pop-Location
