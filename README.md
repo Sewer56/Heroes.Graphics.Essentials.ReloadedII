@@ -16,10 +16,6 @@
       - [Other Features](#other-features)
   - [How to Use](#how-to-use)
 
-# Prerequisites
-The mod uses the [Hooks Shared Library](https://github.com/Sewer56/Reloaded.SharedLib.Hooks).
-Please download and extract that mod first.
-
 # About This Project
 
 The following project is a [Reloaded II](https://github.com/Reloaded-Project/Reloaded-II) Mod Loader mod that provides a set of essential features for running Sonic Heroes in 2019, mainly in the graphics department.
@@ -41,14 +37,7 @@ Graphics Essentials allows you to bypass that wait.
 
 #### Other Features
 
-- Uncapping 2P Framerate: *2P is no longer limited to 30FPS!*
-- Custom Window Styles: *Resizable & Borderless Windows*
-- High Aspect Ratio Crashfix: *Normally when running on very wide resolutions such as 5760x1080, the game would crash when loading a stage. Not anymore.*
-- Complete Launcher Replacement: *The configuration file for this mod replaces the game's settings file completely.*
-
-## How to Use
-**A.** Install Reloaded mods as usual. (Extract to mod directory)
-
-**B.** Enable mod and run the game. (This auto-generates the config files)
-
-**C.** Adjust configuration. (If necessary).
+- Uncapping 2P Framerate: *2P is no longer limited to 30FPS!*  
+- Custom Window Styles: *Resizable & Borderless Windows*  
+- High Aspect Ratio Crashfix: *Normally when running on very wide resolutions such as 5760x1080, the game would crash when loading a stage. Not anymore.*  
+- Complete Launcher Replacement: *The configuration file for this mod replaces the game's settings file completely.*  
