@@ -42,6 +42,9 @@ public class GraphicsEssentials
         if (_config.HighAspectRatioCrashFix)
             _crashPatch = new StageLoadCrashPatch();
 
+        if (_config.NoSubtitles)
+            DisableSubtitlesPatch.Patch();
+        
         if (_config.DontSlowdownOnFocusLost)
             DontSlowdownOnFocusLoss.Patch();
 

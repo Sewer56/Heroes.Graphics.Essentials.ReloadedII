@@ -55,6 +55,11 @@ public class Config : Configurable<Config>
     [Description("Moves the window to the center of the screen.")]
     [DefaultValue(true)]
     public bool CenterWindow { get; set; } = true;
+    
+    [DisplayName("Remove Subtitles")]
+    [Description("Removes the in-game subtitles.")]
+    [DefaultValue(false)]
+    public bool NoSubtitles { get; set; } = false;
 
     [DisplayName("Default Settings")]
     [Description("The regular settings from the Sonic Heroes launcher.")]
