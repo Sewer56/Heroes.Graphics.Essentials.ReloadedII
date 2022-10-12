@@ -8,6 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>10.0</LangVersion>
     <OutputPath>$(RELOADEDIIMODS)\sonicheroes.essentials.graphics</OutputPath>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ReloadedILLink>true</ReloadedILLink>
   </PropertyGroup>
 
@@ -43,7 +44,7 @@
   <ItemGroup>
     <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.3.0" ExcludeAssets="runtime" />
     <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
-    <PackageReference Include="Vanara.PInvoke.User32" Version="3.1.6" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.9" />
   </ItemGroup>
 
   <ItemGroup>

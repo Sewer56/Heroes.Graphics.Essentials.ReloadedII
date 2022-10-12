@@ -26,8 +26,7 @@ public unsafe class AspectRatioHook
         if (windowHandle != IntPtr.Zero)
         {
             // Get current resolution (size of window client area)
-            RECT clientSize = new RECT();
-            User32.GetClientRect(Window.WindowHandle, ref clientSize);
+            User32.GetClientRect(Window.WindowHandle, out RECT clientSize);
 
             float aspectRatio           = AspectConverter.ToAspectRatio(ref clientSize);
             float relativeAspectRatio   = AspectConverter.GetRelativeAspect(aspectRatio);

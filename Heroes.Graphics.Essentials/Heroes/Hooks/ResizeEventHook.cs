@@ -64,8 +64,7 @@ public class ResizeEventHook
     private ResizeEventHookData GetResolutionData()
     {
         // Two things performed here.
-        RECT rect = new RECT();
-        User32.GetClientRect(Window.WindowHandle, ref rect);
+        User32.GetClientRect(Window.WindowHandle, out RECT rect);
 
         var data = new ResizeEventHookData();
         data.CurrentHeight = rect.Height;
