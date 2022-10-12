@@ -19,3 +19,7 @@ Graphics Essentials allows you to bypass that wait.
 - Custom Window Styles: *Resizable & Borderless Windows*  
 - High Aspect Ratio Crashfix: *Normally when running on very wide resolutions such as 5760x1080, the game would crash when loading a stage. Not anymore.*  
 - Complete Launcher Replacement: *The configuration file for this mod replaces the game's settings file completely.*  
+
+## Acknowledgements
+
+[Aperture by Martin Chapman Fromm from Noun Project](https://thenounproject.com/browse/icons/term/aperture/)
