@@ -69,6 +69,7 @@ public unsafe class DefaultSettings
     /// </summary>
     public void Apply()
     {
+        Misc.DefaultSettings.ScreenSize = 6;
         Misc.DefaultSettings.FullScreen = Fullscreen;
         Misc.DefaultSettings.Language = Language;
         Misc.DefaultSettings.SfxVolume = SFXVolume;
