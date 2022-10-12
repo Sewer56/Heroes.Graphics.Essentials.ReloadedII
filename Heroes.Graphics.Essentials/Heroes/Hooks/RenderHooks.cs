@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Heroes.SDK.API;
+﻿using Heroes.SDK.API;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Memory.Sources;
 using Heroes.Graphics.Essentials.Math;
@@ -90,21 +88,20 @@ public unsafe class RenderHooks
         _drawSpecialStageEmeraldHook = Fun_DrawSpecialStageEmeraldAndResultScreenGauge.Hook(DrawSpecialStageEmeraldImpl).Activate();
 
         // Change permissions for game code regions.
-        _memory.ChangePermission((IntPtr) _descriptionX, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _descriptionY, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _descriptionWidth, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _descriptionHeight, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _pickupBoxSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _dotsVertSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _dotsHorzSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _dotsHeight, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr) _dotsWidth, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-
-
-        _memory.ChangePermission((IntPtr)_dotsVertSeparation, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr)_dotsHorzSeparation, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr)_dotsHeight, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
-        _memory.ChangePermission((IntPtr)_dotsWidth, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_descriptionX, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_descriptionY, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_descriptionWidth, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_descriptionHeight, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_pickupBoxSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsVertSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsHorzSeparation, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsHeight, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsWidth, sizeof(void*), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        
+        _memory.ChangePermission((nuint)_dotsVertSeparation, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsHorzSeparation, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsHeight, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
+        _memory.ChangePermission((nuint)_dotsWidth, sizeof(float), MEM_PROTECTION.PAGE_EXECUTE_READWRITE);
     }
 
     public void SubscribeToResizeEventHook(ResizeEventHook hook)
@@ -318,17 +315,17 @@ public unsafe class RenderHooks
 
     private void* DrawResultScreenDotsImpl()
     {
-        _memory.Write((IntPtr)_dotsVertSeparation, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
-        _memory.Write((IntPtr)_dotsHorzSeparation, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
-        _memory.Write((IntPtr)_dotsHeight, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
-        _memory.Write((IntPtr)_dotsWidth, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
+        _memory.Write((nuint)_dotsVertSeparation, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsVerticalSeparation, RelativeAspectRatio, ActualAspectRatio));
+        _memory.Write((nuint)_dotsHorzSeparation, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsHorizontalSeparation, RelativeAspectRatio, ActualAspectRatio));
+        _memory.Write((nuint)_dotsHeight, AspectConverter.ScaleByRelativeAspectY(DefaultResultScreenDotsHeight, RelativeAspectRatio, ActualAspectRatio));
+        _memory.Write((nuint)_dotsWidth, AspectConverter.ScaleByRelativeAspectX(DefaultResultScreenDotsWidth, RelativeAspectRatio, ActualAspectRatio));
 
         var returnValue = _drawResultScreenDotsHook.OriginalFunction();
 
-        _memory.Write((IntPtr)_dotsVertSeparation, DefaultResultScreenDotsVerticalSeparation);
-        _memory.Write((IntPtr)_dotsHorzSeparation, DefaultResultScreenDotsHorizontalSeparation);
-        _memory.Write((IntPtr)_dotsHeight, DefaultResultScreenDotsHeight);
-        _memory.Write((IntPtr)_dotsWidth, DefaultResultScreenDotsWidth);
+        _memory.Write((nuint)_dotsVertSeparation, DefaultResultScreenDotsVerticalSeparation);
+        _memory.Write((nuint)_dotsHorzSeparation, DefaultResultScreenDotsHorizontalSeparation);
+        _memory.Write((nuint)_dotsHeight, DefaultResultScreenDotsHeight);
+        _memory.Write((nuint)_dotsWidth, DefaultResultScreenDotsWidth);
 
         return returnValue;
     }

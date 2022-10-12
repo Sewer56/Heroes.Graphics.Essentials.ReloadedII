@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Heroes.SDK.API;
 using Heroes.SDK.Definitions.Enums;
 

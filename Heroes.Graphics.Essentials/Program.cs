@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Runtime.CompilerServices;
 using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
 using Reloaded.Mod.Interfaces.Internal;
 
+[module: SkipLocalsInit]
 namespace Heroes.Graphics.Essentials;
 
 public class Program : IMod
@@ -31,7 +32,5 @@ public class Program : IMod
     public bool CanSuspend() => false;
 
     /* Automatically called by the mod loader when the mod is about to be unloaded. */
-    public Action Disposing { get; }
-
-    public static void Main() { }
+    public Action Disposing { get; } = () => { };
 }

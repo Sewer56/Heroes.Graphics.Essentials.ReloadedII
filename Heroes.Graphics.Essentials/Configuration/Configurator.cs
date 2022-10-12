@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Reloaded.Mod.Interfaces;
+﻿using Reloaded.Mod.Interfaces;
 
 namespace Heroes.Graphics.Essentials.Configuration
 {

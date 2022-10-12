@@ -1,32 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationIcon />
-    <OutputType>WinExe</OutputType>
-    <StartupObject />
-    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>10.0</LangVersion>
     <OutputPath>$(RELOADEDIIMODS)\sonicheroes.essentials.graphics</OutputPath>
-    <RobustILLink>true</RobustILLink>
+    <ReloadedILLink>true</ReloadedILLink>
   </PropertyGroup>
 
   <ItemGroup>
-    <RobustLinkRoots Include="Heroes.Graphics.Essentials" />
-    <RobustLinkAssemblies Include="Heroes.SDK" />
-    <RobustLinkAssemblies Include="Reloaded.Memory" />
-    <RobustLinkAssemblies Include="Vanara.PInvoke.User32" />
-    <RobustLinkAssemblies Include="Vanara.PInvoke.Shared" />
-    <RobustLinkAssemblies Include="Vanara.PInvoke.Kernel32" />
-    <RobustLinkAssemblies Include="Vanara.PInvoke.Gdi32" />
-    <RobustLinkAssemblies Include="Vanara.Core" />
-    <RobustLinkAssemblies Include="System.Drawing.Common" />
-    <RobustLinkAssemblies Include="Microsoft.Win32.SystemEvents" />
+    <ReloadedLinkRoots Include="Heroes.Graphics.Essentials" />
+    <ReloadedLinkAssemblies Include="Heroes.SDK" />
+    <ReloadedLinkAssemblies Include="Reloaded.Memory" />
+    <ReloadedLinkAssemblies Include="Vanara.PInvoke.User32" />
+    <ReloadedLinkAssemblies Include="Vanara.PInvoke.Shared" />
+    <ReloadedLinkAssemblies Include="Vanara.PInvoke.Kernel32" />
+    <ReloadedLinkAssemblies Include="Vanara.PInvoke.Gdi32" />
+    <ReloadedLinkAssemblies Include="Vanara.Core" />
+    <ReloadedLinkAssemblies Include="System.Drawing.Common" />
+    <ReloadedLinkAssemblies Include="Microsoft.Win32.SystemEvents" />
   </ItemGroup>
 
-  <Import Project="Robust.Trimming.targets" />
+  <Import Project="Reloaded.Trimming.targets" />
 
   <ItemGroup>
     <None Remove="ModConfig.json" />
@@ -43,13 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.1.0" />
+    <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.3.0" ExcludeAssets="runtime" />
     <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="3.1.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <NativeLibs Remove="GraphicsEssentials.cs" />
   </ItemGroup>
 
   <ItemGroup>

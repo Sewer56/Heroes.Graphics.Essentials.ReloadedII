@@ -1,5 +1,4 @@
-﻿using System;
-using Reloaded.Memory.Sources;
+﻿using Reloaded.Memory.Sources;
 
 namespace Heroes.Graphics.Essentials.Heroes.Patches;
 
@@ -28,8 +27,8 @@ public unsafe class WindowStylePatcher
         if (resizable)
             SetResizable(ref stockStyle);
 
-        Memory.CurrentProcess.SafeWrite((IntPtr) _windowStyleA, ref stockStyle);
-        Memory.CurrentProcess.SafeWrite((IntPtr) _windowStyleB, ref stockStyle);
+        Memory.CurrentProcess.SafeWrite((nuint)_windowStyleA, ref stockStyle);
+        Memory.CurrentProcess.SafeWrite((nuint)_windowStyleB, ref stockStyle);
     }
 
     private static void SetBorderless(ref uint currentWindowStyle)

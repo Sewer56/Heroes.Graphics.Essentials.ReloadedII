@@ -135,6 +135,11 @@
 
     Removes executables from build output. Useful when performing R2R Optimisation.
 
+.PARAMETER UseScriptDirectory
+    Default: $True
+
+    Uses script directory for performing build. Otherwise uses current directory.
+    
 .EXAMPLE
   .\Publish.ps1 -ProjectPath "Reloaded.Hooks.ReloadedII/Reloaded.Hooks.ReloadedII.csproj" -PackageName "Reloaded.Hooks.ReloadedII" -PublishOutputDir "Publish/ToUpload"
 
@@ -153,11 +158,12 @@ param (
     $ReadmePath="",
     $Build=$True,
     $BuildR2R=$False,
-    $RemoveExe = $True,
-	
+    $RemoveExe=$True,
+    $UseScriptDirectory=$True,
+
     ## => User Config <= ## 
-    $ProjectPath = "Reloaded.Mod.Template.csproj",
-    $PackageName = "Reloaded.Mod.Template",
+    $ProjectPath = "sonicheroes.utils.debugboot.csproj",
+    $PackageName = "sonicheroes.utils.debugboot",
     $PublishOutputDir = "Publish/ToUpload",
 
     ## => User: Delta Config
@@ -174,7 +180,7 @@ param (
 
     $GameBananaItemId = 333681, # From mod page URL.
 
-    $NuGetPackageId = "Reloaded.Mod.Template",
+    $NuGetPackageId = "sonicheroes.utils.debugboot",
     $NuGetFeedUrl = "http://packages.sewer56.moe:5000/v3/index.json",
     $NuGetAllowUnlisted = $False,
 
@@ -205,8 +211,11 @@ if ($ReadmePath) { $readmeFullPath = [System.IO.Path]::GetFullPath($ReadmePath) 
 
 ## => Script <= ##
 # Set Working Directory
-Split-Path $MyInvocation.MyCommand.Path | Push-Location
-[Environment]::CurrentDirectory = $PWD
+$UseScriptDirectory = [bool]::Parse($UseScriptDirectory)
+if ($UseScriptDirectory) {
+    Split-Path $MyInvocation.MyCommand.Path | Push-Location
+    [Environment]::CurrentDirectory = $PWD
+}
 
 # Convert Booleans
 $IsPrerelease = [bool]::Parse($IsPrerelease)
@@ -394,4 +403,6 @@ Remove-Item $TempDirectory -Recurse -ErrorAction SilentlyContinue
 # Restore Working Directory
 Write-Host "Done."
 Write-Host "Upload the files in folder `"$PublishOutputDir`" to respective location or website."
-Pop-Location
+if ($UseScriptDirectory) {
+    Pop-Location
+}

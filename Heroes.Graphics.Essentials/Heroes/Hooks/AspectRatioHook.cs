@@ -1,5 +1,4 @@
-﻿using System;
-using Heroes.Graphics.Essentials.Math;
+﻿using Heroes.Graphics.Essentials.Math;
 using Heroes.SDK.API;
 using Heroes.SDK.Definitions.Structures.RenderWare.Camera;
 using Reloaded.Hooks.Definitions;

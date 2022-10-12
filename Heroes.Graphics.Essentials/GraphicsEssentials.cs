@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Heroes.Graphics.Essentials.Configuration;
+﻿using Heroes.Graphics.Essentials.Configuration;
 using Heroes.Graphics.Essentials.Heroes.Hooks;
 using Heroes.Graphics.Essentials.Heroes.Patches;
 using Heroes.SDK.API;

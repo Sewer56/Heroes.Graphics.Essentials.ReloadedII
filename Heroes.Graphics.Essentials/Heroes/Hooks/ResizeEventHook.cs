@@ -1,6 +1,4 @@
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Heroes.Graphics.Essentials.Math;
 using Heroes.SDK.API;
 using Vanara.PInvoke;
