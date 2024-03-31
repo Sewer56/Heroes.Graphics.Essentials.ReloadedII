@@ -3,7 +3,7 @@
 	<img src="https://i.imgur.com/BjPn7rU.png" width="150" align="center" />
 	<br/> <br/>
 	<strong>Hey Dream</strong>
-    <p">I need you to help me<br/>
+    <p>I need you to help me<br/>
     put a cringy line here."</p>
 <b>Id: sonicheroes.essentials.graphics</b>
 </div>

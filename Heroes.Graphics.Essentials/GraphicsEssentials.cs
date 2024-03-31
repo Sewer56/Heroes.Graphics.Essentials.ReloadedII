@@ -74,6 +74,8 @@ public class GraphicsEssentials
                 }
             }
 
+            // Force a resize event, with proper window resize, just in case.
+            User32.MoveWindow(Window.WindowHandle, left, top, _config.Width - 1, _config.Height - 1, false);
             User32.MoveWindow(Window.WindowHandle, left, top, _config.Width, _config.Height, false);
 
             await Task.Delay(32);
