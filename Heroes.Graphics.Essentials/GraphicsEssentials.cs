@@ -54,6 +54,7 @@ public class GraphicsEssentials
         _resolutionVariablePatcher  = new ResolutionVariablePatcher();
         _renderHooks                = new RenderHooks(_config.AspectRatioLimit, hooks);
 
+        FixRenderWareCodeSegment.Patch();
         Task.Run(MessagePump);
         Task.Run(async () =>
         {
