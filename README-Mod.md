@@ -24,3 +24,5 @@ Graphics Essentials allows you to bypass that wait.
 ## Acknowledgements
 
 [Aperture by Martin Chapman Fromm from Noun Project](https://thenounproject.com/browse/icons/term/aperture/)
+
+Crazy Muzzarino for Addresses of Some UI Rendering Functions and addresses at [SCHG: Sonic Heroes](https://info.sonicretro.org/SCHG:Sonic_Heroes/EXE_Editing)
