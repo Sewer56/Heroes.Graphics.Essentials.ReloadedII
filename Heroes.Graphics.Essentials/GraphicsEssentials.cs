@@ -91,7 +91,7 @@ public class GraphicsEssentials
         _resolutionVariablePatcher.SubscribeToResizeEventHook(_resizeEventHook);
         _renderHooks.SubscribeToResizeEventHook(_resizeEventHook);
 
-        while (User32.GetMessage(out var msg, HWND.NULL, 0, 0))
+        while (User32.GetMessage(out var msg, HWND.NULL, 0, 0) > 0)
         {
             User32.TranslateMessage(msg);
             User32.DispatchMessage(msg);
