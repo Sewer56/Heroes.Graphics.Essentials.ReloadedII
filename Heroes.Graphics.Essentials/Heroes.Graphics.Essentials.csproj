@@ -42,9 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.3.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.4.0" ExcludeAssets="runtime" />
     <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
-    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.9" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="4.2.1" />
   </ItemGroup>
 
   <ItemGroup>
